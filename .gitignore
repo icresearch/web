@@ -1,0 +1,5 @@
+# macOS
+.DS_Store
+
+# Impeccable per-session detector cache (machine state)
+.impeccable/hook.cache.json

@@ -1,0 +1,23 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "createdAt": "2026-09-26T20:09:30.805Z",
+        "reason": "Claude: Inter is the incumbent body face in index.html; user asked to follow index.html as the design authority (polish, not redesign)"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-09-26T20:09:30.844Z",
+        "reason": "Claude: flagged .topbar is a 96px-min-height flex row vertically centered above a hairline divider, not a bordered container; text sits ~30px from the rule"
+      }
+    ]
+  }
+}

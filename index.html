@@ -1,0 +1,1719 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description"
+        content="I/C Research cuts training and inference costs for teams running their own models, at the same quality, and researches how to make compute go further." />
+    <meta name="theme-color" content="#f8f7f3" />
+    <title>I/C Research — Intelligence per Compute</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400&family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --ink: #15201f;
+            --muted: #5c6662;
+            --line: #d8ddd8;
+            --paper: #f8f7f3;
+            --field: #eef0e9;
+            /* Decorative accents: rules, dots, icons */
+            --amber: #bc751b;
+            --teal: #3d8a8a;
+            --teal-soft: #c5dfdf;
+            /* Text-safe accents: >= 4.5:1 on paper and field */
+            --amber-text: #93580f;
+            --teal-text: #2f6e6e;
+            /* Text on the ink band */
+            --on-ink: #f8f7f3;
+            --on-ink-muted: #a2a5a2;
+            --max: 1220px;
+            /* Fluid side gutter; never smaller than a notch / rounded-corner inset */
+            --gutter: max(clamp(20px, 4.5vw, 46px), env(safe-area-inset-left), env(safe-area-inset-right));
+            --ease-out: cubic-bezier(.16, 1, .3, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scrollbar-color: var(--line) var(--paper);
+        }
+
+        body {
+            margin: 0;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: Inter, Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.55;
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
+        ::selection {
+            background: var(--amber-text);
+            color: var(--paper);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        a:focus-visible {
+            outline: 2px solid var(--amber-text);
+            outline-offset: 4px;
+            border-radius: 2px;
+        }
+
+        .skip-link {
+            position: absolute;
+            left: 16px;
+            top: -60px;
+            z-index: 10;
+            padding: 10px 14px;
+            background: var(--ink);
+            color: var(--paper);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .skip-link:focus {
+            top: 16px;
+        }
+
+        .icon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            flex: none;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.6;
+            stroke-linecap: square;
+            vertical-align: -.1em;
+        }
+
+        .page {
+            max-width: var(--max);
+            margin: 0 auto;
+            padding: 0 var(--gutter);
+        }
+
+        .section-label,
+        .footer-tagline,
+        .footer-nav-label,
+        .connect-link span {
+            font-family: "DM Mono", monospace;
+            font-size: 11px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        /* Header */
+
+        .topbar {
+            min-height: 84px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        /* Logo lockup: serif I/C, amber slash ("per"), RESEARCH + tagline set to the mark's width */
+
+        .brand {
+            display: block;
+            color: var(--ink);
+        }
+
+        .logo {
+            display: block;
+            height: 44px;
+            width: auto;
+        }
+
+        .logo-compact {
+            display: none;
+        }
+
+        .nav {
+            display: flex;
+            gap: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: .005em;
+        }
+
+        .nav a {
+            position: relative;
+            padding: 10px 0;
+            color: var(--muted);
+            transition: color .2s ease;
+        }
+
+        .nav a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 6px;
+            height: 1.5px;
+            background: var(--teal-text);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform .3s var(--ease-out);
+        }
+
+        .nav a:hover {
+            color: var(--ink);
+        }
+
+        /* Primary action: Book a call */
+
+        .nav {
+            align-items: center;
+        }
+
+        .nav .nav-book,
+        .btn-book {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border-radius: 6px;
+            background: var(--ink);
+            color: var(--paper);
+            font-weight: 600;
+            white-space: nowrap;
+            transition: background .2s ease, transform .35s var(--ease-out);
+        }
+
+        .nav .nav-book {
+            padding: 11px 16px;
+        }
+
+        .nav .nav-book::after {
+            display: none;
+        }
+
+        .btn-book {
+            margin-top: 28px;
+            padding: 15px 22px;
+            font-size: 15px;
+        }
+
+        .btn-book .icon {
+            width: 18px;
+            height: 18px;
+            color: var(--amber);
+            transition: transform .35s var(--ease-out);
+        }
+
+        .nav .nav-book:hover,
+        .btn-book:hover {
+            background: #2a3836;
+            color: var(--paper);
+        }
+
+        .btn-book:hover .icon {
+            transform: translateX(4px);
+        }
+
+        .nav-book:active,
+        .btn-book:active {
+            transform: translateY(1px);
+        }
+
+        [data-book][aria-busy="true"] {
+            cursor: progress;
+            opacity: .75;
+        }
+
+        .nav a:hover::after {
+            transform: scaleX(1);
+        }
+
+        /* Hero */
+
+        .hero {
+            padding: clamp(72px, 10vw, 124px) 0 clamp(64px, 8vw, 92px);
+        }
+
+        h1,
+        h2 {
+            font-family: "Playfair Display", Georgia, serif;
+            font-weight: 600;
+            text-wrap: balance;
+        }
+
+        h1 {
+            max-width: 1010px;
+            margin: 0;
+            font-size: clamp(52px, 7vw, 96px);
+            letter-spacing: -.04em;
+            line-height: .96;
+        }
+
+        /* The frontier: flat, then rising to the amber point */
+
+        .frontier {
+            position: relative;
+            height: 150px;
+            margin-top: 64px;
+        }
+
+        .frontier-past {
+            position: absolute;
+            inset: 0;
+            fill: none;
+            stroke: var(--ink);
+            stroke-width: 1.5;
+            stroke-linecap: round;
+        }
+
+        .past-1 {
+            stroke-opacity: .5;
+        }
+
+        .past-2 {
+            stroke-opacity: .36;
+        }
+
+        .past-3 {
+            stroke-opacity: .24;
+        }
+
+        .frontier svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .frontier-axis {
+            fill: none;
+            stroke: var(--line);
+            stroke-width: 1;
+            stroke-dasharray: 2 5;
+        }
+
+        .frontier-curve {
+            fill: none;
+            stroke: var(--ink);
+            stroke-width: 2.5;
+            stroke-linecap: round;
+        }
+
+        .frontier-dot {
+            position: absolute;
+            left: 99.3%;
+            top: 5%;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--amber);
+            transform: translate(-50%, -50%);
+        }
+
+        .hero-bottom {
+            margin-top: 36px;
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(230px, .65fr);
+            gap: clamp(32px, 6vw, 70px);
+            align-items: end;
+        }
+
+        .hero-cta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .hero-lede {
+            max-width: 545px;
+            margin: 0;
+            font-size: 19px;
+            font-weight: 500;
+            line-height: 1.55;
+            letter-spacing: -.02em;
+            text-wrap: pretty;
+        }
+
+        .hero-note {
+            max-width: 370px;
+            margin: 0;
+            padding-left: 19px;
+            border-left: 1px solid var(--teal-soft);
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.65;
+            text-wrap: pretty;
+        }
+
+        /* Sections */
+
+        .content {
+            border-top: 1px solid var(--line);
+        }
+
+        .section,
+        .connect-inner {
+            display: grid;
+            grid-template-columns: 24% 1fr;
+            gap: clamp(28px, 4vw, 50px);
+        }
+
+        .section {
+            padding: clamp(72px, 9vw, 112px) 0 clamp(76px, 9.5vw, 116px);
+            border-bottom: 1px solid var(--line);
+            scroll-margin-top: 24px;
+        }
+
+        .section-label {
+            align-self: start;
+            position: sticky;
+            top: 32px;
+            padding-top: 12px;
+            color: var(--muted);
+        }
+
+        .section-label::before {
+            content: "";
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            margin: 0 9px 1px 0;
+            background: var(--amber);
+            border-radius: 50%;
+        }
+
+        .section-body {
+            max-width: 710px;
+        }
+
+        h2 {
+            margin: 0 0 28px;
+            font-size: clamp(38px, 4.25vw, 59px);
+            letter-spacing: -.035em;
+            line-height: 1.04;
+        }
+
+        .section-body p {
+            margin: 0;
+            font-size: 17px;
+            font-weight: 500;
+            line-height: 1.68;
+            letter-spacing: -.015em;
+            text-wrap: pretty;
+        }
+
+        .section-body p+p {
+            margin-top: 20px;
+        }
+
+        .label-art {
+            display: block;
+            width: 104px;
+            height: 104px;
+            margin-top: 40px;
+            color: var(--ink);
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+        }
+
+        /* Section components */
+
+        .section-body strong {
+            font-weight: 600;
+        }
+
+        .sub-heading {
+            margin: 56px 0 0;
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: -.01em;
+        }
+
+        .mini-label {
+            margin: 0 0 14px;
+            color: var(--muted);
+            font-family: "DM Mono", monospace;
+            font-size: 11px;
+            font-weight: 400;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .text-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: underline;
+            text-decoration-color: var(--line);
+            text-underline-offset: 6px;
+            transition: text-decoration-color .2s ease;
+        }
+
+        .text-link .icon {
+            width: 16px;
+            height: 16px;
+            color: var(--amber-text);
+            transition: transform .35s var(--ease-out);
+        }
+
+        .text-link:hover {
+            text-decoration-color: var(--amber-text);
+        }
+
+        .text-link:hover .icon {
+            transform: translateX(4px);
+        }
+
+        .text-link:hover .icon.external {
+            transform: translate(3px, -3px);
+        }
+
+        /* Hero actions */
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 14px 28px;
+            margin-top: 28px;
+        }
+
+        .hero-actions .btn-book {
+            margin-top: 0;
+        }
+
+        /* For teams */
+
+        .fit {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px 40px;
+            margin-top: 44px;
+            padding-top: 28px;
+            border-top: 1px solid var(--ink);
+        }
+
+        .fit-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .fit-list li {
+            position: relative;
+            padding: 7px 0 7px 22px;
+            font-size: 15px;
+            line-height: 1.55;
+        }
+
+        .fit-list li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 17px;
+            width: 10px;
+            height: 1.5px;
+            background: var(--amber);
+        }
+
+        .fit-not .fit-list li {
+            color: var(--muted);
+        }
+
+        .fit-not .fit-list li::before {
+            background: var(--line);
+        }
+
+        .steps {
+            margin: 18px 0 0;
+            padding: 0;
+            list-style: none;
+            border-top: 1px solid var(--ink);
+        }
+
+        .steps li {
+            display: grid;
+            grid-template-columns: 110px 1fr;
+            gap: 16px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--line);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .step-when {
+            padding-top: 2px;
+            color: var(--teal-text);
+            font-family: "DM Mono", monospace;
+            font-size: 12px;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .terms {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px 40px;
+            margin: 48px 0 0;
+        }
+
+        .terms dt {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .terms dd {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .call-prep {
+            margin-top: 48px;
+            padding: 28px;
+            border-radius: 8px;
+            background: var(--field);
+        }
+
+        .section-body .call-prep p {
+            font-size: 15px;
+            line-height: 1.65;
+        }
+
+        .call-prep .btn-book {
+            margin-top: 20px;
+        }
+
+        /* Training vs serving */
+
+        .stack {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px 44px;
+            margin-top: 40px;
+        }
+
+        .stack-col {
+            padding-top: 22px;
+            border-top: 1px solid var(--ink);
+        }
+
+        .stack-col h3 {
+            margin: 0;
+            font-family: "Playfair Display", Georgia, serif;
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: -.02em;
+            line-height: 1.15;
+        }
+
+        .section-body .stack-for {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .stack-list {
+            margin: 18px 0 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .stack-list li {
+            padding: 12px 0;
+            border-top: 1px solid var(--line);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .section-body .stack-measure {
+            margin-top: 14px;
+            color: var(--teal-text);
+            font-family: "DM Mono", monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            letter-spacing: .02em;
+        }
+
+        .section-body .stack-close {
+            margin-top: 36px;
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        /* How we work */
+
+        .method {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 28px 40px;
+            margin: 40px 0 0;
+            padding: 0;
+            list-style: none;
+            counter-reset: method;
+        }
+
+        .method li {
+            padding-top: 18px;
+            border-top: 1px solid var(--ink);
+            font-size: 15px;
+            line-height: 1.6;
+            counter-increment: method;
+        }
+
+        .method li::before {
+            content: counter(method, decimal-leading-zero);
+            display: block;
+            margin-bottom: 10px;
+            color: var(--amber-text);
+            font-family: "DM Mono", monospace;
+            font-size: 12px;
+        }
+
+        .method strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .deliver {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px 40px;
+            margin-top: 48px;
+            padding: 28px;
+            border-radius: 8px;
+            background: var(--field);
+        }
+
+        .section-body .dont {
+            margin-top: 40px;
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        /* Research */
+
+        .questions {
+            margin: 14px 0 0;
+            padding: 0;
+            list-style: none;
+            border-top: 1px solid var(--ink);
+        }
+
+        .questions li {
+            padding: 16px 0 16px 28px;
+            position: relative;
+            border-bottom: 1px solid var(--line);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .questions li::before {
+            content: "?";
+            position: absolute;
+            left: 0;
+            top: 15px;
+            color: var(--amber-text);
+            font-family: "Playfair Display", Georgia, serif;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .building {
+            margin-top: 44px;
+            padding: 24px 28px;
+            border-radius: 8px;
+            background: var(--field);
+        }
+
+        .section-body .building p {
+            font-size: 15px;
+            line-height: 1.65;
+        }
+
+        .section-body .collab {
+            margin-top: 40px;
+        }
+
+        .research-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 32px;
+            margin-top: 18px;
+        }
+
+        /* Connect: the one ink band */
+
+        .connect {
+            display: block;
+            position: relative;
+            margin: 0 calc(var(--gutter) * -1);
+            padding: 0;
+            border-bottom: 0;
+            background: var(--ink);
+            color: var(--on-ink);
+        }
+
+        .connect ::selection {
+            background: var(--amber);
+            color: var(--ink);
+        }
+
+        .connect a:focus-visible {
+            outline-color: var(--amber);
+        }
+
+        .connect-inner {
+            position: relative;
+            padding: clamp(72px, 9vw, 104px) var(--gutter) clamp(80px, 10vw, 118px);
+        }
+
+        .connect-accent {
+            position: absolute;
+            top: 0;
+            left: var(--gutter);
+            right: var(--gutter);
+            height: 2px;
+            background: linear-gradient(90deg, var(--amber), var(--teal));
+        }
+
+        .connect .section-label {
+            color: var(--teal-soft);
+        }
+
+        .connect .section-label::before {
+            background: var(--teal-soft);
+        }
+
+        .connect .section-body {
+            max-width: none;
+        }
+
+        .connect .section-body>p {
+            max-width: 560px;
+            color: var(--on-ink-muted);
+        }
+
+        .connect-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 52px;
+        }
+
+        .connect-link {
+            min-height: 188px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 40px;
+            border: 1px solid rgba(248, 247, 243, .12);
+            border-radius: 8px;
+            background: rgba(248, 247, 243, .03);
+            transition: background .3s ease, border-color .3s ease, transform .45s var(--ease-out);
+        }
+
+        @media (hover: hover) {
+            .connect-link:hover {
+                background: rgba(248, 247, 243, .06);
+                border-color: rgba(188, 117, 27, .55);
+                transform: translateY(-3px);
+            }
+        }
+
+        .connect-link:active {
+            background: rgba(248, 247, 243, .08);
+        }
+
+        .connect-link span {
+            color: var(--teal-soft);
+        }
+
+        .connect-link b {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: "Playfair Display", Georgia, serif;
+            font-size: clamp(22px, 2.2vw, 28px);
+            font-weight: 500;
+            letter-spacing: -.03em;
+            white-space: nowrap;
+        }
+
+        .connect-link .icon {
+            width: 20px;
+            height: 20px;
+            color: var(--amber);
+            transition: transform .35s var(--ease-out), color .2s ease;
+        }
+
+        .connect-link:hover .icon {
+            transform: translateX(5px);
+            color: var(--teal-soft);
+        }
+
+        .connect-link:hover .icon.external {
+            transform: translate(3px, -3px);
+        }
+
+        .connect .section-body .connect-email {
+            margin: 28px 0 0;
+            color: var(--on-ink-muted);
+            font-size: 15px;
+        }
+
+        .connect-email a {
+            color: var(--on-ink);
+            text-decoration: underline;
+            text-decoration-color: rgba(248, 247, 243, .35);
+            text-underline-offset: 4px;
+            transition: text-decoration-color .2s ease;
+        }
+
+        .connect-email a:hover {
+            text-decoration-color: var(--amber);
+        }
+
+        .connect-desc {
+            margin-top: 8px;
+            font-size: 14px;
+            line-height: 1.55;
+            color: var(--on-ink-muted);
+            text-wrap: pretty;
+        }
+
+        /* Footer */
+
+        footer {
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .footer-accent {
+            height: 2px;
+            background: linear-gradient(90deg, var(--amber), var(--teal-soft) 50%, var(--teal));
+        }
+
+        .footer-inner {
+            padding: 52px 0 22px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 60px;
+            padding-bottom: 48px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .footer-brand {
+            display: block;
+            width: 280px;
+            max-width: 100%;
+            height: auto;
+            color: var(--ink);
+            overflow: visible;
+        }
+
+        .footer-nav {
+            display: flex;
+            gap: 48px;
+            justify-content: flex-end;
+            align-items: start;
+            padding-top: 4px;
+        }
+
+        .footer-nav-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .footer-nav-label {
+            margin-bottom: 4px;
+            color: var(--teal-text);
+            font-size: 11px;
+        }
+
+        .footer-nav-group a {
+            padding: 2px 0;
+            transition: color .2s ease;
+        }
+
+        .footer-nav-group a:hover {
+            color: var(--ink);
+        }
+
+        .footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 0 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .footer-bottom a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 0;
+            color: var(--teal-text);
+            font-family: "DM Mono", monospace;
+            font-size: 11px;
+            font-weight: 400;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            transition: color .2s ease;
+        }
+
+        .footer-bottom a:hover {
+            color: var(--amber-text);
+        }
+
+        /* One authored entrance: the hero settles out of a soft blur. */
+
+        @media (prefers-reduced-motion: no-preference) {
+            @keyframes settle {
+                from {
+                    opacity: 0;
+                    filter: blur(6px);
+                    transform: translateY(18px);
+                }
+            }
+
+            h1 {
+                animation: settle 1.1s var(--ease-out) .05s both;
+            }
+
+            .hero-lede,
+            .btn-book {
+                animation: settle 1s var(--ease-out) .35s both;
+            }
+
+            .btn-book {
+                animation-delay: .45s;
+            }
+
+            .hero-note {
+                animation: settle 1s var(--ease-out) .5s both;
+            }
+
+            @keyframes draw {
+                from {
+                    clip-path: inset(0 100% 0 0);
+                }
+
+                to {
+                    clip-path: inset(0 -2% 0 0);
+                }
+            }
+
+            @keyframes arrive {
+                from {
+                    opacity: 0;
+                    transform: translate(-50%, -50%) scale(0);
+                }
+            }
+
+            .frontier svg {
+                animation: draw 1.8s cubic-bezier(.65, 0, .35, 1) .45s both;
+            }
+
+            /* Earlier frontiers arrive first, then the current one overtakes them */
+            .frontier .frontier-past {
+                animation: draw 1.5s cubic-bezier(.65, 0, .35, 1) .1s both;
+            }
+
+            .frontier-dot {
+                animation: arrive .7s cubic-bezier(.34, 1.56, .64, 1) 2.1s both;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                transition-duration: .01ms !important;
+            }
+        }
+
+        @media (max-width: 680px) {
+            .topbar {
+                min-height: 76px;
+            }
+
+            .logo-full {
+                display: none;
+            }
+
+
+            .logo-compact {
+                display: block;
+                height: 34px;
+            }
+
+            .nav {
+                gap: 18px;
+            }
+
+            .frontier {
+                height: 84px;
+                margin-top: 44px;
+            }
+
+            .frontier-dot {
+                width: 12px;
+                height: 12px;
+                left: 98.5%;
+            }
+
+            .label-art {
+                display: none;
+            }
+
+            h1 {
+                font-size: clamp(44px, 13vw, 64px);
+                line-height: .98;
+            }
+
+            .hero-bottom {
+                margin-top: 28px;
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .hero-lede,
+            .section-body p {
+                font-size: 16px;
+            }
+
+            .hero-note {
+                padding: 16px 0 0;
+                border-left: 0;
+                border-top: 1px solid var(--teal-soft);
+            }
+
+            .section,
+            .connect-inner {
+                display: block;
+            }
+
+            .connect-inner {
+                padding: 72px var(--gutter) 80px;
+            }
+
+            .section-label {
+                position: static;
+                padding: 0 0 24px;
+            }
+
+            h2 {
+                font-size: 38px;
+            }
+
+            .fit,
+            .terms,
+            .stack,
+            .method,
+            .deliver {
+                grid-template-columns: 1fr;
+            }
+
+            .steps li {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+
+            .call-prep,
+            .building,
+            .deliver {
+                padding: 22px;
+            }
+
+            .connect-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+                margin-top: 34px;
+            }
+
+            .connect-link {
+                min-height: 0;
+            }
+
+            .connect-link b {
+                font-size: 24px;
+            }
+
+            .footer-top {
+                grid-template-columns: 1fr;
+                gap: 32px;
+                padding-bottom: 36px;
+            }
+
+            .footer-nav {
+                justify-content: flex-start;
+                gap: 40px;
+            }
+
+            .footer-brand {
+                width: 250px;
+            }
+        }
+
+        /* Narrower screens: the booking action outranks secondary links (GitHub and
+           email stay reachable in Connect and the footer) */
+        @media (max-width: 900px) {
+            .nav-secondary {
+                display: none;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .nav-research {
+                display: none;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .nav-teams {
+                display: none;
+            }
+        }
+
+
+
+        /* Touch: 44px minimum targets without changing the visual rhythm */
+        @media (pointer: coarse) {
+            .nav a {
+                padding: 13px 0;
+            }
+
+            .nav .nav-book {
+                padding: 13px 16px;
+            }
+
+            .nav a::after {
+                bottom: 9px;
+            }
+
+            .footer-nav-group {
+                gap: 0;
+            }
+
+            .footer-nav-group a {
+                padding: 12px 0;
+            }
+
+            .footer-bottom a {
+                padding: 13px 0;
+            }
+        }
+
+        /* Phones in landscape: short viewport, keep the hero within reach */
+        @media (max-height: 520px) and (orientation: landscape) {
+            .topbar {
+                min-height: 72px;
+            }
+
+            .hero {
+                padding: 48px 0 56px;
+            }
+
+            .frontier {
+                height: 96px;
+                margin-top: 36px;
+            }
+
+            .section-label {
+                position: static;
+            }
+        }
+
+        /* Wide screens: let the column breathe a little more */
+        @media (min-width: 1600px) {
+            :root {
+                --max: 1320px;
+            }
+        }
+
+        @media (min-width: 681px) and (max-width: 960px) {
+            .connect-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+
+            .connect-link {
+                min-height: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <defs>
+            <g id="logo-mark">
+                <g fill="currentColor">
+                    <path d="M12.7 476Q8.5 476 4.2 473.2Q0 470.4 0 465.4Q0 453.4 13.4 449.9Q40.2 444.3 50.1 435.8Q59.9 427.3 59.9 405.5L59.9 85.3Q59.9 62.8 50.8 53.6Q41.6 44.4 13.4 38.1Q0 34.6 0 22.6Q0 17.6 4.2 14.8Q8.5 12 12.7 12Q28.2 12 47.6 12.7Q67 13.4 85.7 14.5Q104.4 15.5 118.5 15.5Q132.6 15.5 152.3 14.8Q172.1 14.1 192.5 13.4Q213 12.7 227.8 12.7Q233.4 12.7 236.2 15.2Q239.1 17.6 239.1 23.3Q239.1 30.3 235.5 33.2Q232 36 225.7 38.1Q196.7 46.6 188.3 55.7Q179.8 64.9 179.8 86L179.8 404.8Q179.8 424.5 189 433.3Q198.2 442.2 225.7 449.9Q232 452 235.5 454.8Q239.1 457.7 239.1 464.7Q239.1 469.7 236.2 472.5Q233.4 475.3 227.8 475.3Q213 475.3 192.5 474.6Q172.1 473.9 152.3 473.2Q132.6 472.5 118.5 472.5Q104.4 472.5 85.7 473.2Q67 473.9 47.6 474.9Q28.2 476 12.7 476Z" />
+                    <path d="M738.1 494Q680.6 494 630.3 476.9Q580 459.8 542.1 428.1Q504.3 396.4 483.1 352.3Q462 308.2 462 254.3Q462 204.7 481.7 159.2Q501.3 113.7 539.6 78Q577.8 42.3 633.2 21.1Q688.6 0 759.3 0Q781.9 0 806.3 3.6Q830.7 7.3 853.6 13.1Q876.6 18.9 893.3 26.2Q899.2 29.1 903.9 33.5Q908.6 37.9 909.4 45.9Q913 72.1 914.1 95.1Q915.2 118 915.2 134.1Q915.2 142.8 909 145.7Q902.8 148.6 895.9 145.7Q889 142.8 886.1 134.1Q881 119.5 874.8 103.5Q868.6 87.4 856.2 75.8Q841.6 60.5 816.1 50.3Q790.6 40.1 752.7 40.1Q716.3 40.1 687.1 55.7Q658 71.4 637.6 98.7Q617.2 126.1 606.3 160.7Q595.3 195.3 595.3 233.2Q595.3 282 604.8 322.4Q614.3 362.8 634 392Q653.6 421.1 683.1 436.8Q712.6 452.5 752.7 452.5Q807.4 452.5 840.5 429.9Q873.7 407.3 896.3 358.5Q902.1 345.4 913 346.1Q923.9 346.8 923.9 358.5Q923.9 368.7 922.1 382.2Q920.3 395.6 917 411.3Q913.7 427 908.6 444.5Q906.5 452.5 901.4 457.6Q896.3 462.7 889.7 466.3Q862 478.7 824.1 486.3Q786.2 494 738.1 494Z" />
+                </g>
+                <path fill="#bc751b" d="M248 475H298L505 6H453Z" />
+            </g>
+            <g id="logo-horizontal">
+                <use href="#logo-mark" />
+                <path fill="currentColor" fill-opacity=".28" d="M1031 60h6v374h-6z" />
+                <g fill="currentColor">
+                    <path d="M1165.4 255.5L1144 255.5L1144 105.5L1202.5 105.5Q1231.6 105.5 1248.4 119.3Q1265.1 133.1 1265.1 157.8Q1265.1 174.1 1257.6 185.8Q1250.1 197.4 1236.1 203.6Q1234.2 204.5 1232.1 205.4L1267.6 255.5L1244.3 255.5L1211.9 209.4Q1207.4 209.9 1202.5 209.9L1165.4 209.9L1165.4 255.5ZM1165.4 124.1L1165.4 191.6L1201.9 191.6Q1222.4 191.6 1233 182.8Q1243.6 173.9 1243.6 157.8Q1243.6 141.7 1233 132.9Q1222.4 124.1 1201.9 124.1L1165.4 124.1ZM1460.6 255.5L1351.8 255.5L1351.8 105.5L1457.6 105.5L1457.6 124.1L1373.2 124.1L1373.2 170.2L1448.4 170.2L1448.4 188.4L1373.2 188.4L1373.2 236.9L1460.6 236.9L1460.6 255.5ZM1591.1 257.2Q1573.9 257.2 1558.3 252Q1542.6 246.7 1533.6 238.4L1541.6 221.6Q1550.1 229.1 1563.4 234.1Q1576.7 239 1591.1 239Q1604.1 239 1612.3 236Q1620.4 233 1624.3 227.8Q1628.1 222.5 1628.1 215.9Q1628.1 208.1 1623.1 203.4Q1618.1 198.7 1610 195.8Q1602 192.9 1592.4 190.8Q1582.7 188.6 1573 185.8Q1563.2 182.9 1555.2 178.4Q1547.1 173.9 1542.2 166.3Q1537.3 158.6 1537.3 146.6Q1537.3 135.1 1543.4 125.3Q1549.5 115.6 1562.3 109.7Q1575 103.8 1594.7 103.8Q1607.8 103.8 1620.6 107.2Q1633.5 110.6 1642.9 117.1L1635.9 134.2Q1626.2 127.8 1615.5 124.9Q1604.8 122 1594.7 122Q1582.1 122 1573.9 125.2Q1565.8 128.4 1562 133.8Q1558.3 139.1 1558.3 145.8Q1558.3 153.7 1563.3 158.4Q1568.4 163.1 1576.4 165.9Q1584.4 168.7 1594.1 171Q1603.7 173.2 1613.5 176Q1623.2 178.8 1631.3 183.3Q1639.3 187.8 1644.2 195.3Q1649.1 202.8 1649.1 214.6Q1649.1 225.9 1642.9 235.7Q1636.7 245.4 1623.8 251.3Q1610.8 257.2 1591.1 257.2ZM1841.3 255.5L1732.4 255.5L1732.4 105.5L1838.3 105.5L1838.3 124.1L1753.9 124.1L1753.9 170.2L1829.1 170.2L1829.1 188.4L1753.9 188.4L1753.9 236.9L1841.3 236.9L1841.3 255.5ZM1927.4 255.5L1905.3 255.5L1973.2 105.5L1994.4 105.5L2062.6 255.5L2040.1 255.5L2023.6 218L1943.9 218L1927.4 255.5ZM1951.4 200.9L2016.1 200.9L1983.7 127.4L1951.4 200.9ZM2158.3 255.5L2136.9 255.5L2136.9 105.5L2195.4 105.5Q2224.5 105.5 2241.2 119.3Q2257.9 133.1 2257.9 157.8Q2257.9 174.1 2250.4 185.8Q2242.9 197.4 2229 203.6Q2227.1 204.5 2224.9 205.4L2260.5 255.5L2237.1 255.5L2204.8 209.4Q2200.3 209.9 2195.4 209.9L2158.3 209.9L2158.3 255.5ZM2158.3 124.1L2158.3 191.6L2194.7 191.6Q2215.3 191.6 2225.9 182.8Q2236.5 173.9 2236.5 157.8Q2236.5 141.7 2225.9 132.9Q2215.3 124.1 2194.7 124.1L2158.3 124.1ZM2411.7 257.2Q2394.6 257.2 2380.1 251.5Q2365.6 245.9 2355 235.5Q2344.4 225.1 2338.4 211.1Q2332.4 197.2 2332.4 180.5Q2332.4 163.8 2338.4 149.9Q2344.4 135.9 2355.1 125.5Q2365.9 115.1 2380.3 109.5Q2394.8 103.8 2411.9 103.8Q2429.3 103.8 2444 109.7Q2458.6 115.6 2468.9 127.1L2455 140.6Q2446.4 131.6 2435.7 127.3Q2425 122.9 2412.8 122.9Q2400.1 122.9 2389.3 127.1Q2378.5 131.4 2370.6 139.1Q2362.6 146.9 2358.2 157.5Q2353.9 168.1 2353.9 180.5Q2353.9 192.9 2358.2 203.5Q2362.6 214.1 2370.6 221.9Q2378.5 229.6 2389.3 233.9Q2400.1 238.1 2412.8 238.1Q2425 238.1 2435.7 233.8Q2446.4 229.4 2455 220.1L2468.9 233.6Q2458.6 245.2 2444 251.2Q2429.3 257.2 2411.7 257.2ZM2678.4 255.5L2657 255.5L2657 188.6L2570.9 188.6L2570.9 255.5L2549.4 255.5L2549.4 105.5L2570.9 105.5L2570.9 170L2657 170L2657 105.5L2678.4 105.5L2678.4 255.5Z" />
+                    <path d="M1149.5 382.5L1144 382.5L1144 330.5L1149.5 330.5L1149.5 382.5ZM1189.6 382.5L1184.1 382.5L1184.1 330.5L1188.6 330.5L1222.1 372.7L1222.1 330.5L1227.6 330.5L1227.6 382.5L1223 382.5L1189.6 340.3L1189.6 382.5ZM1277.8 382.5L1272.3 382.5L1272.3 335.3L1254 335.3L1254 330.5L1296 330.5L1296 335.3L1277.8 335.3L1277.8 382.5ZM1359.2 382.5L1322.5 382.5L1322.5 330.5L1358.1 330.5L1358.1 335.3L1328 335.3L1328 353.8L1354.8 353.8L1354.8 358.4L1328 358.4L1328 377.7L1359.2 377.7L1359.2 382.5ZM1424.4 382.5L1389.8 382.5L1389.8 330.5L1395.3 330.5L1395.3 377.7L1424.4 377.7L1424.4 382.5ZM1485.9 382.5L1451.2 382.5L1451.2 330.5L1456.7 330.5L1456.7 377.7L1485.9 377.7L1485.9 382.5ZM1518.2 382.5L1512.7 382.5L1512.7 330.5L1518.2 330.5L1518.2 382.5ZM1575.6 382.9Q1569.6 382.9 1564.6 381Q1559.6 379 1555.9 375.4Q1552.2 371.9 1550.2 367Q1548.1 362.2 1548.1 356.5Q1548.1 350.8 1550.2 346Q1552.2 341.1 1555.9 337.6Q1559.7 334 1564.7 332Q1569.7 330.1 1575.6 330.1Q1581.6 330.1 1586.5 331.9Q1591.5 333.8 1594.9 337.6L1591.5 341Q1588.3 337.8 1584.3 336.4Q1580.4 335 1575.9 335Q1571 335 1567 336.6Q1562.9 338.2 1559.9 341.1Q1556.9 344 1555.2 347.9Q1553.6 351.8 1553.6 356.5Q1553.6 361.1 1555.2 365Q1556.9 369 1559.9 371.9Q1562.9 374.8 1567 376.4Q1571 378 1575.8 378Q1580.2 378 1584.2 376.7Q1586.9 375.8 1589.4 374L1589.4 356.5L1594.6 356.5L1594.6 376.3Q1590.9 379.6 1586 381.3Q1581 382.9 1575.6 382.9ZM1664.6 382.5L1627.8 382.5L1627.8 330.5L1663.5 330.5L1663.5 335.3L1633.3 335.3L1633.3 353.8L1660.2 353.8L1660.2 358.4L1633.3 358.4L1633.3 377.7L1664.6 377.7L1664.6 382.5ZM1700.7 382.5L1695.2 382.5L1695.2 330.5L1699.7 330.5L1733.2 372.7L1733.2 330.5L1738.7 330.5L1738.7 382.5L1734.1 382.5L1700.7 340.3L1700.7 382.5ZM1795.8 382.9Q1790 382.9 1785 381Q1780 379 1776.4 375.4Q1772.7 371.9 1770.7 367Q1768.6 362.2 1768.6 356.5Q1768.6 350.8 1770.7 346Q1772.7 341.1 1776.4 337.6Q1780.1 334 1785.1 332Q1790 330.1 1795.9 330.1Q1801.6 330.1 1806.5 331.9Q1811.5 333.8 1814.9 337.6L1811.4 341.1Q1808.2 337.9 1804.4 336.4Q1800.5 335 1796.1 335Q1791.4 335 1787.4 336.6Q1783.4 338.2 1780.4 341.1Q1777.4 344 1775.7 347.9Q1774.1 351.8 1774.1 356.5Q1774.1 361.2 1775.7 365.1Q1777.4 369 1780.4 371.9Q1783.4 374.8 1787.4 376.4Q1791.4 378 1796.1 378Q1800.5 378 1804.4 376.6Q1808.2 375.1 1811.4 371.8L1814.9 375.3Q1811.5 379.1 1806.5 381Q1801.6 382.9 1795.8 382.9ZM1880.4 382.5L1843.6 382.5L1843.6 330.5L1879.2 330.5L1879.2 335.3L1849.1 335.3L1849.1 353.8L1876 353.8L1876 358.4L1849.1 358.4L1849.1 377.7L1880.4 377.7L1880.4 382.5ZM1953.6 382.5L1948.1 382.5L1948.1 330.5L1967.5 330.5Q1974.1 330.5 1978.9 332.6Q1983.7 334.7 1986.2 338.7Q1988.8 342.7 1988.8 348.3Q1988.8 353.8 1986.2 357.8Q1983.7 361.8 1978.9 363.9Q1974.1 366.1 1967.5 366.1L1953.6 366.1L1953.6 382.5ZM1953.6 335.3L1953.6 361.3L1967.4 361.3Q1975.2 361.3 1979.2 357.9Q1983.3 354.5 1983.3 348.3Q1983.3 342.1 1979.2 338.7Q1975.2 335.3 1967.4 335.3L1953.6 335.3ZM2055.8 382.5L2019.1 382.5L2019.1 330.5L2054.7 330.5L2054.7 335.3L2024.6 335.3L2024.6 353.8L2051.5 353.8L2051.5 358.4L2024.6 358.4L2024.6 377.7L2055.8 377.7L2055.8 382.5ZM2091.9 382.5L2086.4 382.5L2086.4 330.5L2105.9 330.5Q2115.8 330.5 2121.5 335.2Q2127.1 339.9 2127.1 348.3Q2127.1 353.8 2124.6 357.8Q2122 361.8 2117.3 363.9Q2116.3 364.3 2115.3 364.7L2128 382.5L2121.9 382.5L2110.1 365.8Q2108.1 366 2105.9 366L2091.9 366L2091.9 382.5ZM2091.9 335.3L2091.9 361.3L2105.7 361.3Q2113.5 361.3 2117.6 357.9Q2121.6 354.5 2121.6 348.3Q2121.6 342.1 2117.6 338.7Q2113.5 335.3 2105.7 335.3L2091.9 335.3ZM2217.5 382.9Q2211.6 382.9 2206.7 381Q2201.7 379 2198 375.4Q2194.4 371.9 2192.4 367Q2190.3 362.2 2190.3 356.5Q2190.3 350.8 2192.4 346Q2194.4 341.1 2198.1 337.6Q2201.8 334 2206.7 332Q2211.7 330.1 2217.6 330.1Q2223.2 330.1 2228.2 331.9Q2233.2 333.8 2236.6 337.6L2233.1 341.1Q2229.9 337.9 2226.1 336.4Q2222.2 335 2217.7 335Q2213.1 335 2209 336.6Q2205 338.2 2202.1 341.1Q2199.1 344 2197.4 347.9Q2195.7 351.8 2195.7 356.5Q2195.7 361.2 2197.4 365.1Q2199.1 369 2202.1 371.9Q2205 374.8 2209 376.4Q2213.1 378 2217.7 378Q2222.2 378 2226.1 376.6Q2229.9 375.1 2233.1 371.8L2236.6 375.3Q2233.2 379.1 2228.2 381Q2223.2 382.9 2217.5 382.9ZM2288 382.9Q2282.1 382.9 2277.1 381Q2272.1 379 2268.4 375.4Q2264.7 371.8 2262.7 367Q2260.7 362.2 2260.7 356.5Q2260.7 350.8 2262.7 346Q2264.7 341.2 2268.4 337.6Q2272.1 334 2277.1 332Q2282.1 330.1 2288 330.1Q2293.9 330.1 2298.8 332Q2303.8 334 2307.5 337.6Q2311.2 341.1 2313.2 346Q2315.3 350.8 2315.3 356.5Q2315.3 362.2 2313.2 367Q2311.2 371.9 2307.5 375.4Q2303.8 379 2298.8 381Q2293.9 382.9 2288 382.9ZM2288 378Q2292.7 378 2296.6 376.4Q2300.6 374.8 2303.6 371.9Q2306.5 369 2308.1 365.1Q2309.8 361.2 2309.8 356.5Q2309.8 351.8 2308.1 347.9Q2306.5 344 2303.6 341.1Q2300.6 338.2 2296.6 336.6Q2292.7 335 2288 335Q2283.3 335 2279.3 336.6Q2275.3 338.2 2272.4 341.1Q2269.4 344 2267.8 347.9Q2266.1 351.8 2266.1 356.5Q2266.1 361.1 2267.8 365Q2269.4 369 2272.4 371.9Q2275.3 374.8 2279.3 376.4Q2283.3 378 2288 378ZM2350.5 382.5L2345.3 382.5L2345.3 330.5L2349.8 330.5L2372.4 369.1L2394.7 330.5L2399.3 330.5L2399.3 382.5L2394 382.5L2394 340.9L2373.6 375.9L2371 375.9L2350.5 341.1L2350.5 382.5ZM2439.4 382.5L2433.9 382.5L2433.9 330.5L2453.3 330.5Q2459.9 330.5 2464.7 332.6Q2469.4 334.7 2472 338.7Q2474.6 342.7 2474.6 348.3Q2474.6 353.8 2472 357.8Q2469.4 361.8 2464.7 363.9Q2459.9 366.1 2453.3 366.1L2439.4 366.1L2439.4 382.5ZM2439.4 335.3L2439.4 361.3L2453.2 361.3Q2461 361.3 2465 357.9Q2469.1 354.5 2469.1 348.3Q2469.1 342.1 2465 338.7Q2461 335.3 2453.2 335.3L2439.4 335.3ZM2525.8 382.9Q2515.9 382.9 2510.1 377.2Q2504.4 371.5 2504.4 360.3L2504.4 330.5L2509.9 330.5L2509.9 360.1Q2509.9 369.3 2514.1 373.7Q2518.2 378 2525.8 378Q2533.5 378 2537.6 373.7Q2541.8 369.3 2541.8 360.1L2541.8 330.5L2547.1 330.5L2547.1 360.3Q2547.1 371.5 2541.4 377.2Q2535.8 382.9 2525.8 382.9ZM2597 382.5L2591.5 382.5L2591.5 335.3L2573.2 335.3L2573.2 330.5L2615.2 330.5L2615.2 335.3L2597 335.3L2597 382.5ZM2678.4 382.5L2641.7 382.5L2641.7 330.5L2677.3 330.5L2677.3 335.3L2647.2 335.3L2647.2 353.8L2674 353.8L2674 358.4L2647.2 358.4L2647.2 377.7L2678.4 377.7L2678.4 382.5Z" />
+                </g>
+            </g>
+        </defs>
+        <symbol id="i-arrow" viewBox="0 0 20 20">
+            <path d="M3 10h13M11 5l5 5-5 5" />
+        </symbol>
+        <symbol id="i-external" viewBox="0 0 20 20">
+            <path d="M6 14 15 5M8 5h7v7" />
+        </symbol>
+        <symbol id="i-up" viewBox="0 0 20 20">
+            <path d="M10 16V4M5 9l5-5 5 5" />
+        </symbol>
+        <symbol id="g-division" viewBox="0 0 32 32">
+            <g stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">
+                <circle cx="16" cy="6.5" r="3" fill="#bc751b" stroke="none" />
+                <path d="M6 14h20" vector-effect="non-scaling-stroke" />
+                <rect x="10.5" y="19" width="11" height="10" rx="1.5" vector-effect="non-scaling-stroke" />
+            </g>
+        </symbol>
+        <symbol id="g-converge" viewBox="0 0 32 32">
+            <g stroke-linecap="round">
+                <path d="M3 6h7c7 0 9 10 15 10M3 26h7c7 0 9-10 15-10" stroke="#bfc6c1" vector-effect="non-scaling-stroke" />
+                <path d="M3 12h8c6 0 8 4 14 4M3 20h8c6 0 8-4 14-4" vector-effect="non-scaling-stroke" />
+                <rect x="25.5" y="13" width="5.5" height="6" rx="1" fill="#bc751b" stroke="none" />
+            </g>
+        </symbol>
+        <symbol id="g-lifecycle" viewBox="0 0 32 32">
+            <rect x="2" y="10.8" width="2.4" height="2.4" rx=".4" fill="currentColor" stroke="none" /><rect x="2" y="14.8" width="2.4" height="2.4" rx=".4" fill="currentColor" stroke="none" /><rect x="2" y="18.8" width="2.4" height="2.4" rx=".4" fill="currentColor" stroke="none" /><rect x="5.6" y="10.8" width="2.4" height="2.4" rx=".4" fill="#8e9792" stroke="none" /><rect x="5.6" y="14.8" width="2.4" height="2.4" rx=".4" fill="#8e9792" stroke="none" /><rect x="5.6" y="18.8" width="2.4" height="2.4" rx=".4" fill="#8e9792" stroke="none" /><rect x="9.2" y="10.8" width="2.4" height="2.4" rx=".4" fill="#bfc6c1" stroke="none" /><rect x="9.2" y="14.8" width="2.4" height="2.4" rx=".4" fill="#bfc6c1" stroke="none" /><rect x="9.2" y="18.8" width="2.4" height="2.4" rx=".4" fill="#bfc6c1" stroke="none" />
+            <path d="M15 11v10M18 11v10M21 11v10" stroke-linecap="round" vector-effect="non-scaling-stroke" />
+            <rect x="24.5" y="13" width="6" height="6" rx="1" fill="#bc751b" stroke="none" />
+        </symbol>
+        <symbol id="g-steps" viewBox="0 0 32 32">
+            <path d="M3 28h5v-4h4v-4h4c6 0 9-5 11.5-12" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
+            <circle cx="28.8" cy="4.6" r="2.6" fill="#bc751b" stroke="none" />
+        </symbol>
+    </svg>
+
+    <a class="skip-link" href="#top">Skip to content</a>
+
+    <header class="page">
+        <div class="topbar">
+            <a class="brand" href="#top" aria-label="I/C Research, Intelligence per Compute — home">
+                <svg class="logo logo-full" viewBox="0 0 2679 494" aria-hidden="true"><use href="#logo-horizontal" /></svg>
+                <svg class="logo logo-compact" viewBox="0 0 924 494" aria-hidden="true"><use href="#logo-mark" /></svg>
+            </a>
+            <nav class="nav" aria-label="Primary">
+                <a class="nav-teams" href="#teams">For teams</a>
+                <a class="nav-research" href="#research">Research</a>
+                <a class="nav-secondary" href="#how">How we work</a>
+                <a class="nav-book" href="https://calendly.com/hello-intelligencepercompute/30min" data-book target="_blank" rel="noopener">Book a 30-min call</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="top" class="page">
+        <section class="hero" aria-labelledby="hero-title">
+            <h1 id="hero-title">Same model quality. A smaller GPU bill.</h1>
+            <div class="frontier" aria-hidden="true">
+                <svg class="frontier-past" viewBox="0 0 1000 150" preserveAspectRatio="none">
+                    <defs>
+                        <linearGradient id="past-fade" x1="0" x2="1" y1="0" y2="0">
+                            <stop offset="0" stop-color="#fff" stop-opacity=".15" />
+                            <stop offset=".45" stop-color="#fff" stop-opacity=".6" />
+                            <stop offset="1" stop-color="#fff" stop-opacity="1" />
+                        </linearGradient>
+                        <mask id="past-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="150">
+                            <rect width="1000" height="150" fill="url(#past-fade)" />
+                        </mask>
+                    </defs>
+                    <g mask="url(#past-mask)">
+                        <path class="past-3" d="M3 143H640C800 143 910 136 978 112" vector-effect="non-scaling-stroke" />
+                        <path class="past-2" d="M3 142H590C770 142 895 130 978 86" vector-effect="non-scaling-stroke" />
+                        <path class="past-1" d="M3 141H530C740 141 875 124 978 52" vector-effect="non-scaling-stroke" />
+                    </g>
+                </svg>
+                <svg viewBox="0 0 1000 150" preserveAspectRatio="none">
+                    <path class="frontier-axis" d="M0 146H1000" vector-effect="non-scaling-stroke" />
+                    <path class="frontier-curve" d="M3 140H470C700 140 850 120 978 16"
+                        vector-effect="non-scaling-stroke" />
+                </svg>
+                <span class="frontier-dot"></span>
+            </div>
+            <div class="hero-bottom">
+                <div class="hero-cta">
+                    <p class="hero-lede">I/C Research is a research lab that cuts training and inference costs for teams
+                        running their own models, and researches how to make compute go further.</p>
+                    <div class="hero-actions">
+                        <a class="btn-book" href="https://calendly.com/hello-intelligencepercompute/30min" data-book target="_blank" rel="noopener">Book a 30-min call <svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg></a>
+                        <a class="text-link" href="#research">Read the research <svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg></a>
+                    </div>
+                </div>
+                <p class="hero-note">Fixed-fee engagements of about four weeks, on your model and your evaluation. You get
+                    a quality-vs-cost table you can check, not a promise.</p>
+            </div>
+        </section>
+
+        <div class="content">
+            <section class="section" id="teams" aria-labelledby="teams-title">
+                <div class="section-label">For teams
+                    <svg class="label-art" aria-hidden="true"><use href="#g-division" /></svg>
+                </div>
+                <div class="section-body">
+                    <h2 id="teams-title">You chose to run the model yourself. Now make each token cost less.</h2>
+                    <p>In about four weeks, on your model and your evaluation, we measure what you spend today, apply
+                        what actually moves the number, and hand back the result with a quality-vs-cost table you can
+                        verify.</p>
+
+                    <div class="fit">
+                        <div class="fit-col">
+                            <h3 class="mini-label">Built for</h3>
+                            <ul class="fit-list">
+                                <li>Teams that self-host LLMs or VLMs, in the cloud or on-prem</li>
+                                <li>A real, recurring GPU bill for training or serving</li>
+                                <li>No dedicated optimization team</li>
+                            </ul>
+                        </div>
+                        <div class="fit-col fit-not">
+                            <h3 class="mini-label">Not for</h3>
+                            <ul class="fit-list">
+                                <li>API-only stacks</li>
+                                <li>Teams with a large in-house inference team</li>
+                                <li>Small or experimental spend</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3 class="sub-heading">How the four weeks run</h3>
+                    <ol class="steps">
+                        <li><span class="step-when">Week 1</span><span><strong>Baseline.</strong> Hardware, training vs
+                                serving, your evaluation, and where the money actually goes.</span></li>
+                        <li><span class="step-when">Weeks 2–3</span><span><strong>The stack that fits.</strong> Usually
+                                quantization, distillation and better GPU utilization. Engineering, not a science
+                                project.</span></li>
+                        <li><span class="step-when">Week 4</span><span><strong>Side by side.</strong> Cost and quality
+                                before and after, on your evaluation. You keep the optimized weights and recipes under
+                                licence.</span></li>
+                    </ol>
+
+                    <dl class="terms">
+                        <div>
+                            <dt>Fixed fee.</dt>
+                            <dd>No hourly billing.</dd>
+                        </div>
+                        <div>
+                            <dt>Your data stays put.</dt>
+                            <dd>No raw prompts need to leave your network; we can work from your evaluation set and
+                                aggregate metrics. We may publish anonymised, aggregate results, never your data or
+                                model.</dd>
+                        </div>
+                        <div>
+                            <dt>You keep the outcome.</dt>
+                            <dd>Optimized weights and recipes are licensed to you. Methods and tools stay with us.</dd>
+                        </div>
+                        <div>
+                            <dt>A straight answer first.</dt>
+                            <dd>If there's no four-week path, we say so on the first call.</dd>
+                        </div>
+                    </dl>
+
+                    <div class="call-prep">
+                        <p><strong>Bring to the call:</strong> training or serving, GPU type and count, model family, and
+                            what “quality” means on your evaluation. If you own the GPU invoice, that's enough.</p>
+                        <a class="btn-book" href="https://calendly.com/hello-intelligencepercompute/30min" data-book target="_blank" rel="noopener">Book a 30-min call <svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg></a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="stack" aria-labelledby="stack-title">
+                <div class="section-label">Training vs serving
+                    <svg class="label-art" aria-hidden="true"><use href="#g-lifecycle" /></svg>
+                </div>
+                <div class="section-body">
+                    <h2 id="stack-title">Where the bill comes from decides where we cut.</h2>
+                    <div class="stack">
+                        <div class="stack-col">
+                            <h3>If you train models</h3>
+                            <p class="stack-for">Pretraining or fine-tuning</p>
+                            <ul class="stack-list">
+                                <li><strong>GPU utilization:</strong> how much of each GPU-hour does useful work, and what
+                                    stalls it (data loading, communication, checkpointing).</li>
+                                <li><strong>Precision:</strong> mixed- and low-precision training, such as FP8 where your
+                                    hardware supports it, while matching the loss curve.</li>
+                                <li><strong>Parallelism:</strong> how the model and batch are split across your
+                                    cluster.</li>
+                                <li><strong>Serve smaller:</strong> distilling what you trained into a cheaper model for
+                                    production.</li>
+                            </ul>
+                            <p class="stack-measure">Measured in cost per training run and tokens per GPU-hour.</p>
+                        </div>
+                        <div class="stack-col">
+                            <h3>If you serve models</h3>
+                            <p class="stack-for">LLMs and VLMs in production</p>
+                            <ul class="stack-list">
+                                <li><strong>Quantization:</strong> 8- and 4-bit weights (AWQ, GPTQ, FP8), checked slice
+                                    by slice on your evaluation, not just on the average.</li>
+                                <li><strong>Serving:</strong> KV-cache, batching and speculative decoding tuned to your
+                                    real traffic.</li>
+                                <li><strong>Hardware fit:</strong> the right GPU type and count for your load.</li>
+                                <li><strong>Vision-language models:</strong> fewer image tokens per request, where quality
+                                    allows.</li>
+                            </ul>
+                            <p class="stack-measure">Measured in cost per million tokens and latency at your
+                                concurrency.</p>
+                        </div>
+                    </div>
+                    <p class="stack-close">Every change is judged per slice of your evaluation. An average can hide a
+                        model that got worse exactly where it matters.</p>
+                </div>
+            </section>
+
+            <section class="section" id="how" aria-labelledby="how-title">
+                <div class="section-label">How we work
+                    <svg class="label-art" aria-hidden="true"><use href="#g-steps" /></svg>
+                </div>
+                <div class="section-body">
+                    <h2 id="how-title">Every project ends in something you can check.</h2>
+                    <p>Client engagements and research projects run on the same method, and both end in artefacts
+                        someone else can rerun.</p>
+                    <ol class="method">
+                        <li><strong>Measure first.</strong> A baseline before anything changes: your hardware and your
+                            evaluation for client work, public models and benchmarks for research.</li>
+                        <li><strong>Change one thing at a time.</strong> Each technique is tested on its own, so you know
+                            what actually moved the number.</li>
+                        <li><strong>Check every slice.</strong> Quality is judged per slice of the evaluation, not on the
+                            average. Regressions get reported, not hidden.</li>
+                        <li><strong>Write it down.</strong> Results, settings and code, recorded so the result can be
+                            reproduced.</li>
+                    </ol>
+
+                    <div class="deliver">
+                        <div>
+                            <h3 class="mini-label">With a client</h3>
+                            <ul class="fit-list">
+                                <li>Optimized weights or recipes, and the serving settings to run them</li>
+                                <li>A quality-vs-cost table on your evaluation</li>
+                                <li>A short report: what changed, what it saved, what we'd try next</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="mini-label">On a research project</h3>
+                            <ul class="fit-list">
+                                <li>Open evaluation code and benchmarks</li>
+                                <li>Reproducible results, including what didn't work</li>
+                                <li>A written note or paper, co-authored with collaborators</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p class="dont">We sell measured results, not software: no platform, no dashboard, no seat
+                        licences.</p>
+                </div>
+            </section>
+
+            <section class="section" id="research" aria-labelledby="research-title">
+                <div class="section-label">Research
+                    <svg class="label-art" aria-hidden="true"><use href="#g-converge" /></svg>
+                </div>
+                <div class="section-body">
+                    <h2 id="research-title">Stop paying full price for work the model has already done.</h2>
+                    <p>Models spend the same compute on an input they have effectively seen a thousand times as on a
+                        new one. Caches help only when requests are identical. Our research bet, familiarity-aware
+                        neural networks (FANN), asks whether a model can recognise familiar inputs from its own
+                        processing history and spend less on them (full, thin or skipped computation), with bounded
+                        error.</p>
+                    <p>It's a research bet, not our sales pitch. We'll call it working only when it saves measurable
+                        compute on real workloads, and we'll publish the curves either way.</p>
+
+                    <h3 class="sub-heading">Open questions</h3>
+                    <ul class="questions">
+                        <li>When is it safe to reuse or skip computation, and how do you bound the error?</li>
+                        <li>How much compute do duplicate-heavy workloads (documents, catalogues, video frames) actually
+                            waste?</li>
+                        <li>Can the same idea cut training cost when models revisit near-duplicate data?</li>
+                    </ul>
+
+                    <div class="building">
+                        <h3 class="mini-label">What we're building first</h3>
+                        <p>An open evaluation harness and a quantization quality-vs-cost suite, with results per slice
+                            instead of averages. It's also how we'll measure FANN.</p>
+                    </div>
+
+                    <p class="collab">We work with researchers on concrete, public artefacts: a shared evaluation, a
+                        co-authored note, a model release. If you want to test, extend or break FANN, write to us.</p>
+                    <div class="research-links">
+                        <a class="text-link" href="mailto:hello@intelligencepercompute.com?subject=Research%20collaboration">Propose a collaboration <svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg></a>
+                        <a class="text-link" href="https://theefficientfrontier.ai" target="_blank" rel="noopener noreferrer">Read our notes on The Efficient Frontier <svg class="icon external" aria-hidden="true"><use href="#i-external" /></svg></a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section connect" id="connect" aria-labelledby="connect-title">
+                <div class="connect-inner">
+                    <div class="connect-accent"></div>
+                    <div class="section-label">Connect</div>
+                    <div class="section-body">
+                        <h2 id="connect-title">Follow the work.</h2>
+                        <p>We will share research, code, and opportunities to collaborate as our work develops.</p>
+                        <div class="connect-grid">
+                            <a class="connect-link" href="#research">
+                                <span>Explore</span>
+                                <div>
+                                    <b>Research <svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg></b>
+                                    <div class="connect-desc">Our research bet, open questions and how to collaborate.</div>
+                                </div>
+                            </a>
+                            <a class="connect-link" href="https://github.com/ic-research" target="_blank"
+                                rel="noopener noreferrer">
+                                <span>Build with us</span>
+                                <div>
+                                    <b>GitHub <svg class="icon external" aria-hidden="true"><use href="#i-external" /></svg></b>
+                                    <div class="connect-desc">Open-source code, models, and benchmarks.</div>
+                                </div>
+                            </a>
+                            <a class="connect-link" href="https://calendly.com/hello-intelligencepercompute/30min" data-book target="_blank" rel="noopener">
+                                <span>30 min</span>
+                                <div>
+                                    <b>Book a call <svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg></b>
+                                    <div class="connect-desc">Pick a time that works; the invite lands in your calendar.</div>
+                                </div>
+                            </a>
+                        </div>
+                        <p class="connect-email">Prefer email? <a href="mailto:hello@intelligencepercompute.com">hello@intelligencepercompute.com</a></p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="page">
+        <div class="footer-accent"></div>
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div>
+                    <svg class="footer-brand" viewBox="0 0 2679 494" role="img"
+                        aria-label="I/C Research, Intelligence per Compute"><use href="#logo-horizontal" /></svg>
+                </div>
+                <nav class="footer-nav" aria-label="Footer">
+                    <div class="footer-nav-group">
+                        <span class="footer-nav-label">Lab</span>
+                        <a href="#teams">For teams</a>
+                        <a href="#stack">Training vs serving</a>
+                        <a href="#how">How we work</a>
+                        <a href="#research">Research</a>
+                    </div>
+                    <div class="footer-nav-group">
+                        <span class="footer-nav-label">Connect</span>
+                        <a href="https://github.com/ic-research" target="_blank" rel="noopener noreferrer">GitHub</a>
+                        <a href="https://calendly.com/hello-intelligencepercompute/30min" data-book target="_blank" rel="noopener">Book a 30-min call</a>
+                        <a href="mailto:hello@intelligencepercompute.com">Contact</a>
+                    </div>
+                </nav>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2026 I/C Research</span>
+                <a href="#top">Back to top <svg class="icon" aria-hidden="true"><use href="#i-up" /></svg></a>
+            </div>
+        </div>
+    </footer>
+    <script>
+        /* Booking: every [data-book] link carries the Calendly URL in its href
+           (change it in all four places). Calendly's widget loads on first intent,
+           so nothing third-party runs until a visitor asks for it. */
+        (() => {
+            const links = document.querySelectorAll('[data-book]');
+            if (!links.length) return;
+            let loading = null;
+
+            const load = () => loading ??= new Promise((resolve, reject) => {
+                const css = document.createElement('link');
+                css.rel = 'stylesheet';
+                css.href = 'https://assets.calendly.com/assets/external/widget.css';
+                document.head.append(css);
+                const js = document.createElement('script');
+                js.src = 'https://assets.calendly.com/assets/external/widget.js';
+                js.async = true;
+                js.onload = () => window.Calendly ? resolve(window.Calendly) : reject();
+                js.onerror = () => {
+                    loading = null;   // allow a retry on the next click
+                    js.remove();
+                    reject();
+                };
+                document.head.append(js);
+            });
+
+            const withTheme = href => {
+                const url = new URL(href);
+                url.searchParams.set('hide_gdpr_banner', '1');
+                url.searchParams.set('background_color', 'f8f7f3');
+                url.searchParams.set('text_color', '15201f');
+                url.searchParams.set('primary_color', '93580f');
+                return url.toString();
+            };
+
+            links.forEach(link => {
+                ['pointerenter', 'focus'].forEach(type =>
+                    link.addEventListener(type, () => load().catch(() => { }), { once: true }));
+
+                link.addEventListener('click', event => {
+                    if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
+                    event.preventDefault();
+                    link.setAttribute('aria-busy', 'true');
+
+                    // Each click resolves exactly once: popup if Calendly is ready in time,
+                    // otherwise a new tab while the click still counts as a user gesture.
+                    let settled = false;
+                    const settle = open => {
+                        if (settled) return;
+                        settled = true;
+                        clearTimeout(timer);
+                        link.removeAttribute('aria-busy');
+                        open();
+                    };
+                    const newTab = () => window.open(link.href, '_blank', 'noopener');
+                    const timer = setTimeout(() => settle(newTab), 3000);
+
+                    load().then(
+                        Calendly => settle(() => Calendly.initPopupWidget({ url: withTheme(link.href) })),
+                        () => settle(newTab)
+                    );
+                });
+            });
+        })();
+    </script>
+</body>
+
+</html>
