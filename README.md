@@ -9,7 +9,6 @@ The site is a single static page. There is no build step, framework, or package 
 ```
 index.html        The whole site: markup, CSS (in <style>), and a small booking script
 assets/
-  favicon.svg     Earlier browser-tab icon (I/C mark on an ink tile), no longer used
   logo/           Logo files, outlined SVGs that need no fonts; icon-dark.svg is the favicon
 images/           Logo concept images and screenshots (reference only, not used by the page)
 ```
