@@ -1,13 +1,15 @@
 # I/C Research — website
 
-The front door for **I/C Research** (Intelligence per Compute): a research lab that cuts training and inference costs for teams running their own models, and researches how to make compute go further.
+The front door for **I/C Research** (Intelligence per Compute): an AI research lab on adaptive computation, testing whether a model's own history can tell it when to run less.
+
+> **Interim page.** The current copy is a stopgap from the v2 positioning while the new site is planned and designed.
 
 The site is a single static page. There is no build step, framework, or package manager.
 
 ## Structure
 
 ```
-index.html        The whole site: markup, CSS (in <style>), and a small booking script
+index.html        The whole site: markup and CSS (in <style>), no scripts
 assets/
   logo/           Logo files, outlined SVGs that need no fonts; icon-dark.svg is the favicon
 images/           Logo concept images and screenshots (reference only, not used by the page)
@@ -41,18 +43,17 @@ Then visit http://localhost:8000.
 
 | Section | Anchor | Purpose |
 |---------|--------|---------|
-| Hero | `#top` | Headline, one-line description, primary booking action |
-| For teams | `#teams` | Who it's for, the four-week engagement, terms |
-| Training vs serving | `#stack` | What gets tuned for training vs serving workloads |
-| How we work | `#how` | Shared method and deliverables for client and research work |
-| Research | `#research` | The FANN research bet, open questions, collaboration |
-| Connect | `#connect` | Research, GitHub, booking, email |
+| Hero | `#top` | Headline, one-line description, current stage |
+| The question | `#question` | Why full passes on familiar inputs are waste; the three routes |
+| How we work | `#how` | Protocol-first principle, Intelligence per Compute |
+| Research | `#research` | FANN, research directions, stages A to C |
+| Contact | `#connect` | Writing, code, email, founder |
 
 ## Common edits
 
-**Booking link.** Every "Book a 30-min call" link carries the Calendly URL in its `href` and a `data-book` attribute. Search `index.html` for `calendly.com/` and replace all occurrences. The script at the bottom of the page opens Calendly as a popup; it loads Calendly's widget only when a visitor hovers, focuses, or clicks a booking link, and falls back to opening Calendly in a new tab if the widget is slow or blocked.
+**Status.** The hero note states the current stage. Dates and thresholds live in the protocol, not on the homepage, so the page doesn't go stale when a milestone moves.
 
-**Contact email.** Search for `hello@intelligencepercompute.com`. It appears in the Connect section, the footer, and the research collaboration link (which pre-fills the subject "Research collaboration").
+**Contact email.** Search for `hello@intelligencepercompute.com`. It appears in the Contact section and the footer.
 
 **Colors and spacing.** Design tokens are CSS custom properties on `:root` at the top of the `<style>` block: ink, paper, field, amber and teal (with `-text` variants that meet WCAG AA contrast for small text), max width, and the fluid side gutter.
 
@@ -63,8 +64,8 @@ Then visit http://localhost:8000.
 Tested from 320px to 1920px wide, plus phones in landscape.
 
 - Spacing, gutters and headline sizes scale fluidly with `clamp()`.
-- Below 680px: single column; the header shows the I/C mark and the booking button.
-- The header nav drops links as space shrinks: "How we work" below 900px, "Research" below 560px, "For teams" below 400px. The booking button always stays.
+- Below 680px: single column; the header shows the I/C mark and the "Break the claim" button.
+- The header nav drops links as space shrinks: "The question" below 900px, "Research" below 560px, "How we work" below 400px. The "Break the claim" button always stays.
 - Touch devices get 44px minimum tap targets; hover effects apply only on devices that support hover.
 - Safe-area insets are respected on notched phones.
 - Motion (the hero entrance and frontier-curve draw) is disabled for visitors who prefer reduced motion.
