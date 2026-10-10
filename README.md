@@ -9,29 +9,27 @@ The site is a single static page. There is no build step, framework, or package 
 ## Structure
 
 ```
-index.html        The whole site: markup and CSS (in <style>), no scripts
-favicon.svg, favicon.ico   I/C mark favicons (16/32/48px in the .ico); from the brand kit (ops/brand/icons)
+index.html        The whole site: markup and CSS (in <style>), plus a small inline script for the theme toggle
+favicon.svg, favicon.ico, favicon-16/32/48.png   I/C mark favicons; from the brand kit (ops/brand/icons)
 apple-touch-icon.png, android-chrome-*.png, maskable-512.png, site.webmanifest   touch and app icons
 robots.txt, sitemap.xml
 assets/
-  logo/           Logo files, outlined SVGs that need no fonts
-  social/         Share-preview card (og-card.png, 1200x630) and its HTML source; icon-512.png
+  brand/          Logos (SVG) and share-preview images (PNG), copied from the brand kit (ops/brand)
+  social/         icon-512.png
 images/           Logo concept images and screenshots (reference only; excluded from deploys)
 ```
 
 ### Logo files
 
+All in `assets/brand/`, copied from the brand kit in the ops repo (`ops/brand/logos`). The files already include the brand's clear space, so size them by height. They are outlined SVGs and need no fonts.
+
 | File | Use |
 |------|-----|
-| `ic-research-horizontal.svg` | Primary lockup (I/C · RESEARCH · Intelligence per Compute), light backgrounds |
-| `ic-research-horizontal-light.svg` | Same, for dark backgrounds |
-| `ic-research-mark.svg` | I/C mark alone, light backgrounds |
-| `ic-research-mark-light.svg` | I/C mark alone, dark backgrounds |
-| `icon-dark.svg` | Grid icon on an ink tile, an earlier icon kept as an alternate (the favicon is now the I/C mark) |
-| `ic-research-grid-horizontal.svg` | Grid icon + I/C RESEARCH wordmark, an alternate lockup |
-| `ic-research-lockup.svg`, `ic-research-lockup-compact.svg` | Earlier stacked versions, kept as alternates |
+| `ic-research-horizontal-reverse.svg` / `-primary.svg` | Header logo: reverse on dark, primary on light |
+| `ic-research-mark-reverse.svg` / `-primary.svg` | I/C mark alone, for small phones (header) |
+| `ic-research-horizontal-tagline-reverse.svg` / `-primary.svg` | Footer logo, with the tagline (only at 240px wide or more) |
 
-The letterforms are EB Garamond ExtraBold (I/C) and Montserrat (RESEARCH, tagline), converted to outlines. Both fonts are under the SIL Open Font License. The page embeds the same logo inline in `index.html`, so it doesn't load these files.
+Each logo is two `<img>` elements (`.on-dark`, `.on-light`); CSS shows the one that matches the active theme. Don't recolour the files; follow the logo rules in `ops/brand/README.md`.
 
 ## Run it locally
 
@@ -51,7 +49,7 @@ Then visit http://localhost:8000.
 | The question | `#question` | Why full passes on familiar inputs are waste; the three routes |
 | How we work | `#how` | Protocol-first principle, Intelligence per Compute |
 | Research | `#research` | FANN, research directions, stages A to C |
-| Contact | `#connect` | Writing, code, email, founder |
+| Contact | `#connect` | Writing, code, LinkedIn, X, email, founder |
 
 ## Common edits
 
@@ -59,19 +57,17 @@ Then visit http://localhost:8000.
 
 **Contact email.** Search for `hello@intelligencepercompute.com`. It appears in the Contact section and the footer.
 
-**Colors and spacing.** Design tokens are CSS custom properties on `:root` at the top of the `<style>` block: ink, paper, field, amber and teal (with `-text` variants that meet WCAG AA contrast for small text), max width, and the fluid side gutter.
+**Colors and spacing.** Design tokens are CSS custom properties on `:root` at the top of the `<style>` block (values from `ops/brand/colors/tokens.css`): background, foreground, muted, line, field, amber and teal (with text-safe variants that meet WCAG AA contrast), max width, and the fluid side gutter.
+
+**Theme.** Dark is the default; light follows the visitor's OS setting (`prefers-color-scheme: light`). The toggle in the header saves a choice in `localStorage` (`ic-theme`) and sets `data-theme` on `<html>`, which overrides the OS setting. Theme values live in the `:root` blocks near the top of the `<style>` block.
 
 **Fonts.** Loaded from Google Fonts: Playfair Display (headings), Inter (body), DM Mono (labels).
 
 ## Share previews
 
-Link previews on WhatsApp, LinkedIn, Slack, X and others come from the Open Graph and Twitter tags in `<head>`: title, description, and `assets/social/og-card.png`. Image URLs are absolute (`https://www.intelligencepercompute.com/...`), as the platforms require.
+Link previews on WhatsApp, LinkedIn, Slack, X and others come from the Open Graph and Twitter tags in `<head>`: title, description, and `assets/brand/og-image-1200x630-dark.png`. Image URLs are absolute (`https://www.intelligencepercompute.com/...`), as the platforms require.
 
-To change the card, edit `assets/social/og-card.html` and re-render it with Chrome:
-
-```bash
-"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars --force-device-scale-factor=1 --window-size=1200,630 --virtual-time-budget=8000 --screenshot="$PWD/assets/social/og-card.png" "file://$PWD/assets/social/og-card.html"
-```
+The images come from the brand kit (`ops/brand/social/web`, dark and light, 1200x630). To change the card, regenerate it in the ops repo with `python3 brand/build/build.py` and copy the file here. Use a new file name when the image changes, so platforms don't serve a cached copy.
 
 Platforms cache previews. After deploying a new card, refresh it with LinkedIn's Post Inspector or Facebook's Sharing Debugger; WhatsApp updates on its own after a while.
 
@@ -80,9 +76,9 @@ Platforms cache previews. After deploying a new card, refresh it with LinkedIn's
 Tested from 320px to 1920px wide, plus phones in landscape.
 
 - Spacing, gutters and headline sizes scale fluidly with `clamp()`.
-- Below 680px: single column; the header shows the I/C mark and the "Break the claim" button.
+- Below 680px: single column; the header shows the I/C mark, the "Break the claim" button and the theme toggle.
 - The header nav drops links as space shrinks: "The question" below 900px, "Research" below 560px, "How we work" below 400px. The "Break the claim" button always stays.
-- Touch devices get 44px minimum tap targets; hover effects apply only on devices that support hover.
+- Touch devices get 44px minimum tap targets (including the theme toggle); hover effects apply only on devices that support hover.
 - Safe-area insets are respected on notched phones.
 - Motion (the hero entrance and frontier-curve draw) is disabled for visitors who prefer reduced motion.
 
