@@ -1074,34 +1074,25 @@
         /* Research: direction cards and the stage timeline */
 
         .dir-grid {
-            display: grid;
-            grid-template-columns: repeat(6, minmax(0, 1fr));
-            gap: 16px;
             margin: 22px 0 0;
             padding: 0;
             list-style: none;
+            border-top: 1px solid var(--rule);
             counter-reset: dir;
         }
 
         .dir-card {
-            grid-column: span 2;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding: 22px 22px 24px;
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            background: var(--field);
+            display: grid;
+            grid-template-columns: 44px minmax(0, 1fr) minmax(0, 1.05fr);
+            gap: 6px clamp(16px, 3vw, 32px);
+            align-items: baseline;
+            padding: 24px 0;
+            border-bottom: 1px solid var(--line);
             counter-increment: dir;
-        }
-
-        .dir-card:nth-child(-n+2) {
-            grid-column: span 3;
         }
 
         .dir-card::before {
             content: counter(dir, decimal-leading-zero);
-            margin-bottom: 14px;
             color: var(--amber-text);
             font-family: "DM Mono", monospace;
             font-size: 12px;
@@ -1210,32 +1201,18 @@
         }
 
         @media (max-width: 900px) {
-            .dir-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
+            .dir-card {
+                grid-template-columns: 36px minmax(0, 1fr);
             }
 
-            .dir-card,
-            .dir-card:nth-child(-n+2) {
-                grid-column: span 1;
-            }
-
-            .dir-card:last-child {
-                grid-column: 1 / -1;
+            .dir-desc {
+                grid-column: 2;
             }
         }
 
         @media (max-width: 680px) {
-            .dir-grid {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
-
-            .dir-card:last-child {
-                grid-column: auto;
-            }
-
             .dir-card {
-                padding: 20px;
+                padding: 20px 0;
             }
 
             .stages {
@@ -1354,24 +1331,74 @@
             grid-column: 1 / -1;
         }
 
+        /* Links as a ruled list: label, name, what it is. The rule sweeps amber on hover. */
         .connect-grid {
-            display: grid;
-            grid-template-columns: repeat(6, minmax(0, 1fr));
-            gap: 20px;
-            margin-top: clamp(40px, 5vw, 64px);
+            display: block;
+            margin-top: clamp(36px, 5vw, 56px);
+            border-top: 1px solid rgba(248, 247, 243, .18);
         }
 
         .connect-link {
-            grid-column: span 2;
+            position: relative;
+            display: grid;
+            grid-template-columns: minmax(110px, 150px) minmax(0, 1.15fr) minmax(0, 1fr);
+            gap: 6px clamp(20px, 4vw, 48px);
+            align-items: baseline;
+            padding: 28px 0;
+            border-bottom: 1px solid rgba(248, 247, 243, .14);
         }
 
-        .connect-primary {
-            grid-column: span 3;
-            min-height: 236px;
+        .connect-link>div {
+            display: contents;
         }
 
-        .connect-primary b {
+        .connect-link::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -1px;
+            height: 1px;
+            background: var(--amber);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform .55s var(--ease-out);
+        }
+
+        .connect-link span {
+            color: var(--teal-soft);
+        }
+
+        .connect-link b {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: "Playfair Display", Georgia, serif;
             font-size: clamp(26px, 3vw, 38px);
+            font-weight: 500;
+            letter-spacing: -.03em;
+            line-height: 1.1;
+        }
+
+        .connect-link .icon {
+            width: 20px;
+            height: 20px;
+            color: var(--amber);
+            transition: transform .35s var(--ease-out);
+        }
+
+        @media (hover: hover) {
+            .connect-link:hover::after {
+                transform: scaleX(1);
+            }
+
+            .connect-link:hover .icon {
+                transform: translateX(5px);
+            }
+
+            .connect-link:hover .icon.external {
+                transform: translate(3px, -3px);
+            }
         }
 
         .connect-notes {
@@ -1385,62 +1412,6 @@
 
         .connect .section-body .connect-notes .connect-email {
             margin: 0;
-        }
-
-        .connect-link {
-            min-height: 172px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            gap: 40px;
-            border: 1px solid rgba(248, 247, 243, .12);
-            border-radius: 8px;
-            background: rgba(248, 247, 243, .03);
-            transition: background .3s ease, border-color .3s ease, transform .45s var(--ease-out);
-        }
-
-        @media (hover: hover) {
-            .connect-link:hover {
-                background: rgba(248, 247, 243, .06);
-                border-color: rgba(188, 117, 27, .55);
-                transform: translateY(-3px);
-            }
-        }
-
-        .connect-link:active {
-            background: rgba(248, 247, 243, .08);
-        }
-
-        .connect-link span {
-            color: var(--teal-soft);
-        }
-
-        .connect-link b {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-family: "Playfair Display", Georgia, serif;
-            font-size: clamp(22px, 2.2vw, 28px);
-            font-weight: 500;
-            letter-spacing: -.03em;
-            white-space: nowrap;
-        }
-
-        .connect-link .icon {
-            width: 20px;
-            height: 20px;
-            color: var(--amber);
-            transition: transform .35s var(--ease-out), color .2s ease;
-        }
-
-        .connect-link:hover .icon {
-            transform: translateX(5px);
-            color: var(--teal-soft);
-        }
-
-        .connect-link:hover .icon.external {
-            transform: translate(3px, -3px);
         }
 
         .connect .section-body .connect-email {
@@ -1462,7 +1433,7 @@
         }
 
         .connect-desc {
-            margin-top: 8px;
+            margin: 0;
             font-size: 14px;
             line-height: 1.55;
             color: var(--on-ink-muted);
@@ -1741,21 +1712,13 @@
                 margin: 20px 0 0;
             }
 
-            .connect-grid {
-                grid-template-columns: 1fr;
-                gap: 14px;
-                margin-top: 34px;
-            }
-
-            .connect-primary,
             .connect-link {
-                grid-column: auto;
-                min-height: 0;
+                grid-template-columns: 1fr;
+                padding: 22px 0;
             }
 
-            .connect-link b,
-            .connect-primary b {
-                font-size: 24px;
+            .connect-link b {
+                font-size: 26px;
             }
 
             .connect-notes {
@@ -1879,20 +1842,12 @@
                 margin: 0;
             }
 
-            .connect-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 14px;
-            }
-
-            .connect-primary,
             .connect-link {
-                grid-column: span 1;
-                min-height: 0;
+                grid-template-columns: 120px minmax(0, 1fr);
             }
 
-            .connect-primary,
-            .connect-link:last-child {
-                grid-column: 1 / -1;
+            .connect-desc {
+                grid-column: 2;
             }
         }
     </style>
@@ -2160,7 +2115,7 @@
                         <p>If you work on early exit, caching, video reuse, or calibration, we would like you to find the
                             flaw.</p>
                         <div class="connect-grid">
-                            <a class="connect-link connect-primary" href="https://theefficientfrontier.ai" target="_blank"
+                            <a class="connect-link" href="https://theefficientfrontier.ai" target="_blank"
                                 rel="noopener noreferrer">
                                 <span>Writing</span>
                                 <div>
@@ -2168,7 +2123,7 @@
                                     <div class="connect-desc">Explainers, results, and the failures.</div>
                                 </div>
                             </a>
-                            <a class="connect-link connect-primary" href="https://github.com/ic-research" target="_blank"
+                            <a class="connect-link" href="https://github.com/ic-research" target="_blank"
                                 rel="noopener noreferrer">
                                 <span>Code</span>
                                 <div>
