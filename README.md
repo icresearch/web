@@ -10,8 +10,12 @@ The site is a single static page. There is no build step, framework, or package 
 
 ```
 index.html        The whole site: markup and CSS (in <style>), no scripts
+favicon.ico       16/32/48px favicon for browsers and crawlers that skip SVG icons
+apple-touch-icon.png  180px icon for iOS home screens and some link previews
+robots.txt, sitemap.xml
 assets/
   logo/           Logo files, outlined SVGs that need no fonts; icon-dark.svg is the favicon
+  social/         Share-preview card (og-card.png, 1200x630) and its HTML source; icon-512.png
 images/           Logo concept images and screenshots (reference only, not used by the page)
 ```
 
@@ -58,6 +62,18 @@ Then visit http://localhost:8000.
 **Colors and spacing.** Design tokens are CSS custom properties on `:root` at the top of the `<style>` block: ink, paper, field, amber and teal (with `-text` variants that meet WCAG AA contrast for small text), max width, and the fluid side gutter.
 
 **Fonts.** Loaded from Google Fonts: Playfair Display (headings), Inter (body), DM Mono (labels).
+
+## Share previews
+
+Link previews on WhatsApp, LinkedIn, Slack, X and others come from the Open Graph and Twitter tags in `<head>`: title, description, and `assets/social/og-card.png`. Image URLs are absolute (`https://www.intelligencepercompute.com/...`), as the platforms require.
+
+To change the card, edit `assets/social/og-card.html` and re-render it with Chrome:
+
+```bash
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars --force-device-scale-factor=1 --window-size=1200,630 --virtual-time-budget=8000 --screenshot="$PWD/assets/social/og-card.png" "file://$PWD/assets/social/og-card.html"
+```
+
+Platforms cache previews. After deploying a new card, refresh it with LinkedIn's Post Inspector or Facebook's Sharing Debugger; WhatsApp updates on its own after a while.
 
 ## Responsive behavior
 
