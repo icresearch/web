@@ -412,7 +412,7 @@
         /* Hero */
 
         .hero {
-            padding: clamp(72px, 10vw, 124px) 0 clamp(64px, 8vw, 92px);
+            padding: clamp(56px, 8vw, 104px) 0 clamp(56px, 7vw, 84px);
         }
 
         h1,
@@ -434,8 +434,10 @@
 
         .frontier {
             position: relative;
-            height: 150px;
-            margin-top: 64px;
+            height: clamp(160px, 19vw, 250px);
+            /* The rising end tucks up beside the headline's second line */
+            margin-top: calc(-1 * clamp(24px, 6vw, 84px));
+            pointer-events: none;
         }
 
         .frontier-past {
@@ -480,15 +482,37 @@
             stroke-linecap: round;
         }
 
+        .frontier-area {
+            fill: url(#area-fade);
+            stroke: none;
+        }
+
+        .frontier-drop {
+            fill: none;
+            stroke: var(--amber);
+            stroke-opacity: .55;
+            stroke-width: 1;
+            stroke-dasharray: 2 5;
+        }
+
         .frontier-dot {
             position: absolute;
-            left: 99.3%;
-            top: 5%;
+            left: 97.8%;
+            top: 10.67%;
             width: 16px;
             height: 16px;
             border-radius: 50%;
             background: var(--amber);
             transform: translate(-50%, -50%);
+        }
+
+        .frontier-dot::after {
+            content: "";
+            position: absolute;
+            inset: -7px;
+            border: 1px solid var(--amber);
+            border-radius: 50%;
+            opacity: .45;
         }
 
         .hero-bottom {
@@ -716,32 +740,6 @@
             background: var(--line);
         }
 
-        .steps {
-            margin: 18px 0 0;
-            padding: 0;
-            list-style: none;
-            border-top: 1px solid var(--rule);
-        }
-
-        .steps li {
-            display: grid;
-            grid-template-columns: 110px 1fr;
-            gap: 16px;
-            padding: 20px 0;
-            border-bottom: 1px solid var(--line);
-            font-size: 15px;
-            line-height: 1.6;
-        }
-
-        .step-when {
-            padding-top: 2px;
-            color: var(--teal-text);
-            font-family: "DM Mono", monospace;
-            font-size: 12px;
-            letter-spacing: .04em;
-            text-transform: uppercase;
-        }
-
         .terms {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -912,18 +910,6 @@
             font-weight: 600;
         }
 
-        .building {
-            margin-top: 44px;
-            padding: 24px 28px;
-            border-radius: 8px;
-            background: var(--field);
-        }
-
-        .section-body .building p {
-            font-size: 15px;
-            line-height: 1.65;
-        }
-
         .section-body .collab {
             margin-top: 40px;
         }
@@ -933,6 +919,156 @@
             flex-wrap: wrap;
             gap: 8px 32px;
             margin-top: 18px;
+        }
+
+        /* Question: routes drawn as compute spent */
+
+        .routes {
+            margin: 22px 0 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .route {
+            display: grid;
+            grid-template-columns: 124px minmax(0, 1fr);
+            gap: 0 20px;
+            align-items: start;
+            padding: 20px 0;
+        }
+
+        .route-when {
+            padding-top: 3px;
+            color: var(--teal-text);
+            font-family: "DM Mono", monospace;
+            font-size: 12px;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .route-body strong {
+            display: block;
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: -.01em;
+        }
+
+        /* Dashed track = full compute; solid line = what this route spends */
+        .route-line {
+            position: relative;
+            display: block;
+            height: 14px;
+            margin-top: 14px;
+        }
+
+        .route-line::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 6px;
+            border-top: 1px dashed var(--line);
+        }
+
+        .route-line::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 6px;
+            width: var(--spend);
+            height: 2px;
+            margin-top: -.5px;
+            border-radius: 1px;
+            background: var(--fg);
+        }
+
+        .route-body {
+            position: relative;
+        }
+
+        .route-body::after {
+            content: "";
+            position: absolute;
+            left: clamp(6px, var(--spend), calc(100% - 6px));
+            bottom: 1px;
+            width: 12px;
+            height: 12px;
+            margin-left: -6px;
+            border-radius: 50%;
+            background: var(--amber);
+        }
+
+        /* How we work: the frontier, drawn once, beside its definition */
+
+        .ipc {
+            display: grid;
+            grid-template-columns: minmax(200px, 300px) minmax(0, 1fr);
+            gap: 20px clamp(28px, 5vw, 56px);
+            align-items: center;
+            margin-top: 52px;
+            padding-top: 32px;
+            border-top: 1px solid var(--rule);
+        }
+
+        .ipc-art {
+            display: block;
+            width: 100%;
+            height: auto;
+            overflow: visible;
+        }
+
+        .ipc-art path {
+            fill: none;
+            stroke-linecap: round;
+        }
+
+        .ipc-axis {
+            stroke: var(--glyph-quiet);
+            stroke-width: 1;
+        }
+
+        .ipc-past {
+            stroke: var(--fg);
+            stroke-width: 1.5;
+        }
+
+        .ipc-now {
+            stroke: var(--fg);
+            stroke-width: 2.5;
+        }
+
+        .ipc-dot {
+            fill: var(--amber);
+        }
+
+        .ipc-label {
+            fill: var(--muted);
+            font-family: "DM Mono", monospace;
+            font-size: 11px;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+        }
+
+        .section-body .ipc-text p {
+            font-size: 16px;
+            line-height: 1.65;
+        }
+
+        @media (max-width: 680px) {
+            .route {
+                grid-template-columns: 1fr;
+                gap: 8px;
+                padding: 16px 0;
+            }
+
+            .ipc {
+                grid-template-columns: 1fr;
+                margin-top: 40px;
+            }
+
+            .ipc-art {
+                max-width: 300px;
+            }
         }
 
         /* Research: direction cards and the stage timeline */
@@ -1531,14 +1667,13 @@
             }
 
             .frontier {
-                height: 84px;
-                margin-top: 44px;
+                height: 130px;
+                margin-top: 36px;
             }
 
             .frontier-dot {
                 width: 12px;
                 height: 12px;
-                left: 98.5%;
             }
 
             .label-art {
@@ -1593,13 +1728,7 @@
                 grid-template-columns: 1fr;
             }
 
-            .steps li {
-                grid-template-columns: 1fr;
-                gap: 6px;
-            }
-
             .call-prep,
-            .building,
             .deliver {
                 padding: 22px;
             }
@@ -1861,6 +1990,14 @@
                     </g>
                 </svg>
                 <svg viewBox="0 0 1000 150" preserveAspectRatio="none">
+                    <defs>
+                        <linearGradient id="area-fade" x1="0" x2="0" y1="0" y2="1">
+                            <stop offset="0" stop-color="#bc751b" stop-opacity=".22" />
+                            <stop offset="1" stop-color="#bc751b" stop-opacity="0" />
+                        </linearGradient>
+                    </defs>
+                    <path class="frontier-area" d="M3 140H470C700 140 850 120 978 16V146H3Z" />
+                    <path class="frontier-drop" d="M978 16V146" vector-effect="non-scaling-stroke" />
                     <path class="frontier-axis" d="M0 146H1000" vector-effect="non-scaling-stroke" />
                     <path class="frontier-curve" d="M3 140H470C700 140 850 120 978 16"
                         vector-effect="non-scaling-stroke" />
@@ -1895,11 +2032,28 @@
                         not.</p>
 
                     <h3 class="sub-heading">Three routes</h3>
-                    <ol class="steps">
-                        <li><span class="step-when">New</span><span><strong>Runs the full model.</strong></span></li>
-                        <li><span class="step-when">Familiar</span><span><strong>Runs a light path.</strong></span></li>
-                        <li><span class="step-when">Already seen</span><span><strong>Reuses the earlier
-                                    result.</strong></span></li>
+                    <ol class="routes">
+                        <li class="route" style="--spend: 100%">
+                            <span class="route-when">New</span>
+                            <div class="route-body">
+                                <strong>Runs the full model.</strong>
+                                <span class="route-line" aria-hidden="true"></span>
+                            </div>
+                        </li>
+                        <li class="route" style="--spend: 42%">
+                            <span class="route-when">Familiar</span>
+                            <div class="route-body">
+                                <strong>Runs a light path.</strong>
+                                <span class="route-line" aria-hidden="true"></span>
+                            </div>
+                        </li>
+                        <li class="route" style="--spend: 9%">
+                            <span class="route-when">Already seen</span>
+                            <div class="route-body">
+                                <strong>Reuses the earlier result.</strong>
+                                <span class="route-line" aria-hidden="true"></span>
+                            </div>
+                        </li>
                     </ol>
                     <p class="stack-close">The gate has to be right, not just fast. The failure that matters is an input
                         wrongly called familiar, so that is the error we measure.</p>
@@ -1918,10 +2072,22 @@
                     <p class="stack-close">The stage A protocol will be published here and on GitHub before the first
                         run.</p>
 
-                    <div class="building">
-                        <h3 class="mini-label">Intelligence per Compute</h3>
-                        <p>Not one number. A frontier: quality, per slice, against cost per request, with every overhead
-                            counted. Progress means the curve moves. We publish the curve, with the baselines on it.</p>
+                    <div class="ipc">
+                        <svg class="ipc-art" viewBox="0 0 320 190" aria-hidden="true">
+                            <path class="ipc-axis" d="M34 8V158H314" />
+                            <path class="ipc-past" style="stroke-opacity:.22" d="M34 150C130 150 210 146 300 112" />
+                            <path class="ipc-past" style="stroke-opacity:.36" d="M34 148C130 147 210 138 300 90" />
+                            <path class="ipc-past" style="stroke-opacity:.5" d="M34 146C130 144 215 128 300 66" />
+                            <path class="ipc-now" d="M34 144C140 142 225 112 300 30" />
+                            <circle class="ipc-dot" cx="300" cy="30" r="6" />
+                            <text class="ipc-label" x="34" y="182">Cost per request</text>
+                            <text class="ipc-label" x="0" y="0" transform="translate(12 158) rotate(-90)">Quality</text>
+                        </svg>
+                        <div class="ipc-text">
+                            <h3 class="mini-label">Intelligence per Compute</h3>
+                            <p>Not one number. A frontier: quality, per slice, against cost per request, with every overhead
+                                counted. Progress means the curve moves. We publish the curve, with the baselines on it.</p>
+                        </div>
                     </div>
                 </div>
             </section>
