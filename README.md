@@ -10,11 +10,11 @@ The site is a single static page. There is no build step, framework, or package 
 
 ```
 index.html        The whole site: markup and CSS (in <style>), no scripts
-favicon.ico       16/32/48px favicon for browsers and crawlers that skip SVG icons
-apple-touch-icon.png  180px icon for iOS home screens and some link previews
+favicon.svg, favicon.ico   I/C mark favicons (16/32/48px in the .ico); from the brand kit (ops/brand/icons)
+apple-touch-icon.png, android-chrome-*.png, maskable-512.png, site.webmanifest   touch and app icons
 robots.txt, sitemap.xml
 assets/
-  logo/           Logo files, outlined SVGs that need no fonts; icon-dark.svg is the favicon
+  logo/           Logo files, outlined SVGs that need no fonts
   social/         Share-preview card (og-card.png, 1200x630) and its HTML source; icon-512.png
 images/           Logo concept images and screenshots (reference only; excluded from deploys)
 ```
@@ -27,7 +27,7 @@ images/           Logo concept images and screenshots (reference only; excluded 
 | `ic-research-horizontal-light.svg` | Same, for dark backgrounds |
 | `ic-research-mark.svg` | I/C mark alone, light backgrounds |
 | `ic-research-mark-light.svg` | I/C mark alone, dark backgrounds |
-| `icon-dark.svg` | Grid icon on an ink tile: favicon, social avatar, app icon |
+| `icon-dark.svg` | Grid icon on an ink tile, an earlier icon kept as an alternate (the favicon is now the I/C mark) |
 | `ic-research-grid-horizontal.svg` | Grid icon + I/C RESEARCH wordmark, an alternate lockup |
 | `ic-research-lockup.svg`, `ic-research-lockup-compact.svg` | Earlier stacked versions, kept as alternates |
 
