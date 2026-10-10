@@ -935,6 +935,212 @@
             margin-top: 18px;
         }
 
+        /* Research: direction cards and the stage timeline */
+
+        .dir-grid {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 16px;
+            margin: 22px 0 0;
+            padding: 0;
+            list-style: none;
+            counter-reset: dir;
+        }
+
+        .dir-card {
+            grid-column: span 2;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 22px 22px 24px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--field);
+            counter-increment: dir;
+        }
+
+        .dir-card:nth-child(-n+2) {
+            grid-column: span 3;
+        }
+
+        .dir-card::before {
+            content: counter(dir, decimal-leading-zero);
+            margin-bottom: 14px;
+            color: var(--amber-text);
+            font-family: "DM Mono", monospace;
+            font-size: 12px;
+            letter-spacing: .04em;
+        }
+
+        .dir-title {
+            margin: 0;
+            font-family: "Playfair Display", Georgia, serif;
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: -.02em;
+            line-height: 1.2;
+            text-wrap: balance;
+        }
+
+        .section-body .dir-desc {
+            margin: 0;
+            color: var(--muted);
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1.6;
+            letter-spacing: 0;
+        }
+
+        .stages {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0 28px;
+            margin: 26px 0 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .stage {
+            position: relative;
+            padding-top: 38px;
+        }
+
+        .stage::before {
+            content: "";
+            position: absolute;
+            top: 7px;
+            left: 0;
+            right: -28px;
+            height: 1px;
+            background: var(--line);
+        }
+
+        .stage:last-child::before {
+            right: 0;
+        }
+
+        .stage.is-current::before {
+            background: linear-gradient(90deg, var(--amber), var(--line));
+        }
+
+        .stage::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 15px;
+            height: 15px;
+            box-sizing: border-box;
+            border: 1.5px solid var(--glyph-quiet);
+            border-radius: 50%;
+            background: var(--bg);
+        }
+
+        .stage.is-current::after {
+            border-color: var(--amber);
+            background: var(--amber);
+        }
+
+        .stage-when {
+            display: block;
+            color: var(--teal-text);
+            font-family: "DM Mono", monospace;
+            font-size: 12px;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .stage-title {
+            margin: 8px 0 10px;
+            font-family: "Playfair Display", Georgia, serif;
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: -.02em;
+            line-height: 1.15;
+        }
+
+        .section-body .stage-desc {
+            margin: 0;
+            color: var(--muted);
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1.6;
+            letter-spacing: 0;
+        }
+
+        #research .dont {
+            padding-left: 19px;
+            border-left: 1px solid var(--teal-soft);
+        }
+
+        @media (max-width: 900px) {
+            .dir-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .dir-card,
+            .dir-card:nth-child(-n+2) {
+                grid-column: span 1;
+            }
+
+            .dir-card:last-child {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 680px) {
+            .dir-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .dir-card:last-child {
+                grid-column: auto;
+            }
+
+            .dir-card {
+                padding: 20px;
+            }
+
+            .stages {
+                grid-template-columns: 1fr;
+            }
+
+            .stage {
+                padding: 0 0 30px 38px;
+            }
+
+            .stage:last-child {
+                padding-bottom: 0;
+            }
+
+            .stage::before,
+            .stage:last-child::before {
+                top: 16px;
+                bottom: -4px;
+                left: 7px;
+                right: auto;
+                width: 1px;
+                height: auto;
+            }
+
+            .stage:last-child::before {
+                display: none;
+            }
+
+            .stage.is-current::before {
+                background: linear-gradient(180deg, var(--amber), var(--line));
+            }
+
+            .stage::after {
+                top: 1px;
+            }
+
+            .stage-title {
+                font-size: 24px;
+            }
+        }
+
         /* Connect: the one ink band */
 
         .connect {
@@ -1731,25 +1937,48 @@
                         study the ways a network can vary its compute.</p>
 
                     <h3 class="sub-heading">Research directions</h3>
-                    <ul class="stack-list directions">
-                        <li><strong>Dynamic neural networks:</strong> depth, width, or path chosen per input.</li>
-                        <li><strong>Early-exit networks:</strong> stop once the answer is reliable enough.</li>
-                        <li><strong>Mixture-of-experts:</strong> a few experts active per token, and whether familiarity
-                            can guide the routing.</li>
-                        <li><strong>Looped and depth-recurrent networks:</strong> reuse the same layers for as many steps
-                            as the input needs.</li>
-                        <li><strong>Memory of past passes:</strong> remember what was processed, and reuse it when that is
-                            safe.</li>
+                    <ul class="dir-grid">
+                        <li class="dir-card">
+                            <h4 class="dir-title">Dynamic neural networks</h4>
+                            <p class="dir-desc">Depth, width, or path chosen per input.</p>
+                        </li>
+                        <li class="dir-card">
+                            <h4 class="dir-title">Early-exit networks</h4>
+                            <p class="dir-desc">Stop once the answer is reliable enough.</p>
+                        </li>
+                        <li class="dir-card">
+                            <h4 class="dir-title">Mixture-of-experts</h4>
+                            <p class="dir-desc">A few experts active per token, and whether familiarity can guide the
+                                routing.</p>
+                        </li>
+                        <li class="dir-card">
+                            <h4 class="dir-title">Looped and depth-recurrent networks</h4>
+                            <p class="dir-desc">Reuse the same layers for as many steps as the input needs.</p>
+                        </li>
+                        <li class="dir-card">
+                            <h4 class="dir-title">Memory of past passes</h4>
+                            <p class="dir-desc">Remember what was processed, and reuse it when that is safe.</p>
+                        </li>
                     </ul>
 
                     <h3 class="sub-heading">Stages</h3>
-                    <ol class="steps">
-                        <li><span class="step-when">Stage A</span><span><strong>Policy.</strong> A gate over frozen open
-                                models, tested on public workloads. This is the work in progress.</span></li>
-                        <li><span class="step-when">Stage B</span><span><strong>Architecture.</strong> The behaviour
-                                trained into a model. Only if A holds.</span></li>
-                        <li><span class="step-when">Stage C</span><span><strong>Capability.</strong> A system that
-                                improves with experience. A direction, not a claim.</span></li>
+                    <ol class="stages">
+                        <li class="stage is-current">
+                            <span class="stage-when">Stage A</span>
+                            <h4 class="stage-title">Policy</h4>
+                            <p class="stage-desc">A gate over frozen open models, tested on public workloads. This is the
+                                work in progress.</p>
+                        </li>
+                        <li class="stage">
+                            <span class="stage-when">Stage B</span>
+                            <h4 class="stage-title">Architecture</h4>
+                            <p class="stage-desc">The behaviour trained into a model. Only if A holds.</p>
+                        </li>
+                        <li class="stage">
+                            <span class="stage-when">Stage C</span>
+                            <h4 class="stage-title">Capability</h4>
+                            <p class="stage-desc">A system that improves with experience. A direction, not a claim.</p>
+                        </li>
                     </ol>
                     <p class="dont">Quantization, distillation, and pruning are tools we use to build the light path. We
                         do not sell optimization services, a platform, or a dashboard.</p>
