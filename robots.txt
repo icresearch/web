@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /images/
 
 Sitemap: https://www.intelligencepercompute.com/sitemap.xml

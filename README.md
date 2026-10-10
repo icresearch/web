@@ -16,7 +16,7 @@ robots.txt, sitemap.xml
 assets/
   logo/           Logo files, outlined SVGs that need no fonts; icon-dark.svg is the favicon
   social/         Share-preview card (og-card.png, 1200x630) and its HTML source; icon-512.png
-images/           Logo concept images and screenshots (reference only, not used by the page)
+images/           Logo concept images and screenshots (reference only; excluded from deploys)
 ```
 
 ### Logo files
@@ -88,4 +88,4 @@ Tested from 320px to 1920px wide, plus phones in landscape.
 
 ## Deploying
 
-Any static host works (GitHub Pages, Netlify, Vercel, Cloudflare Pages, S3). Publish the repository root; `index.html` is the entry point. Exclude `images/` from the deploy if you want to keep the concept files private — the page doesn't use them.
+The site deploys on Vercel from `main`. `index.html` at the repository root is the entry point. `.vercelignore` keeps `images/` (the logo concept files) out of the deploy; on another host, exclude that folder the same way.
