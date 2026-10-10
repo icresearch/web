@@ -1095,8 +1095,9 @@
 
         .footer-top {
             display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            gap: 60px;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr);
+            gap: clamp(40px, 6vw, 88px);
+            align-items: start;
             padding-bottom: 48px;
             border-bottom: 1px solid var(--line);
         }
@@ -1106,21 +1107,35 @@
             width: 320px;
             max-width: 100%;
             height: auto;
-            margin-left: -14px;
+            margin-left: -8px;
         }
 
         .footer-nav {
-            display: flex;
-            gap: 48px;
-            justify-content: flex-end;
+            display: grid;
+            grid-template-columns: minmax(0, .8fr) minmax(0, 1.4fr);
+            gap: clamp(28px, 4vw, 56px);
             align-items: start;
-            padding-top: 4px;
         }
 
         .footer-nav-group {
             display: flex;
             flex-direction: column;
             gap: 6px;
+            padding-top: 16px;
+            border-top: 1px solid var(--line);
+        }
+
+        .footer-links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: repeat(3, auto);
+            grid-auto-flow: column;
+            gap: 6px 32px;
+        }
+
+        .footer-links a,
+        .footer-nav-group > a {
+            display: block;
         }
 
         .footer-nav-label {
@@ -1353,12 +1368,17 @@
             }
 
             .footer-nav {
-                justify-content: flex-start;
-                gap: 40px;
+                gap: 28px;
             }
 
             .footer-brand {
                 width: 280px;
+            }
+
+            .footer-links {
+                grid-template-columns: 1fr;
+                grid-template-rows: none;
+                grid-auto-flow: row;
             }
         }
 
@@ -1726,11 +1746,13 @@
                     </div>
                     <div class="footer-nav-group">
                         <span class="footer-nav-label">Follow</span>
-                        <a href="https://theefficientfrontier.ai" target="_blank" rel="noopener noreferrer">The Efficient Frontier</a>
-                        <a href="https://github.com/ic-research" target="_blank" rel="noopener noreferrer">GitHub</a>
-                        <a href="https://www.linkedin.com/company/i-c-research/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-                        <a href="https://x.com/ICResearchLab" target="_blank" rel="noopener noreferrer">X</a>
-                        <a href="mailto:hello@intelligencepercompute.com">Email</a>
+                        <div class="footer-links">
+                            <a href="https://theefficientfrontier.ai" target="_blank" rel="noopener noreferrer">The Efficient Frontier</a>
+                            <a href="https://github.com/ic-research" target="_blank" rel="noopener noreferrer">GitHub</a>
+                            <a href="https://www.linkedin.com/company/i-c-research/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                            <a href="https://x.com/ICResearchLab" target="_blank" rel="noopener noreferrer">X</a>
+                            <a href="mailto:hello@intelligencepercompute.com">Email</a>
+                        </div>
                     </div>
                 </nav>
             </div>
